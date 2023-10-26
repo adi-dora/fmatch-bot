@@ -1,0 +1,384 @@
+{
+ "giveaways": [
+  {
+   "id": "9a7c9e50-eef2-4348-ae89-76136b784189",
+   "prize": "2 to",
+   "num_winners": 1,
+   "time": "2023-08-17 12:40:01.817673",
+   "host": 512398565994266626,
+   "participants": [],
+   "channel": 794680791710826496,
+   "role": null,
+   "message": 1141788051723526247,
+   "ongoing": true,
+   "winners": [],
+   "required_role": 737030359593517056
+  },
+  {
+   "id": "de5328d0-b892-4813-b437-7cfad9da1a6f",
+   "prize": "t",
+   "num_winners": 1,
+   "time": "2023-08-17 12:40:12.573919",
+   "host": 512398565994266626,
+   "participants": [],
+   "channel": 794680783297970206,
+   "role": null,
+   "message": 1141787850354987029,
+   "ongoing": false,
+   "winners": [
+    512398565994266626
+   ],
+   "required_role": null
+  },
+  {
+   "id": "e05e8d7f-b37f-4995-bb0e-31a39273c3c9",
+   "prize": "gr",
+   "num_winners": 1,
+   "time": "2023-08-08 12:38:49.508706",
+   "host": 512398565994266626,
+   "participants": [],
+   "channel": 794680791710826496,
+   "role": 737030359593517056,
+   "message": 1138511160950407229,
+   "ongoing": false,
+   "winners": [
+    512398565994266626
+   ],
+   "required_role": 698010181031690320
+  },
+  {
+   "id": "7b15eec0-9b67-4bdd-8c52-6d4ee65df002",
+   "prize": "g",
+   "num_winners": 1,
+   "time": "2023-08-08 12:37:56.725935",
+   "host": 512398565994266626,
+   "participants": [],
+   "channel": 794680791710826496,
+   "role": null,
+   "message": 1138510939126251530,
+   "ongoing": false,
+   "winners": [
+    512398565994266626
+   ],
+   "required_role": null
+  },
+  {
+   "id": "5c5d6488-11ff-44a6-85bc-cfc389212a61",
+   "prize": "nothing",
+   "num_winners": 1,
+   "time": "2023-08-07 17:49:54.003001",
+   "host": 512398565994266626,
+   "participants": [],
+   "channel": 794680791710826496,
+   "role": null,
+   "message": 1138226807682908211,
+   "ongoing": false,
+   "winners": [
+    512398565994266626
+   ],
+   "required_role": null
+  },
+  {
+   "id": "b03791fc-e49b-4bad-bc70-c528e968b79e",
+   "prize": "x",
+   "num_winners": 1,
+   "time": "2023-07-31 21:50:47.278008",
+   "host": 512398565994266626,
+   "participants": [
+    281940778970775563
+   ],
+   "channel": 1135052505139658782,
+   "role": null,
+   "message": 1135751422907002992,
+   "ongoing": false,
+   "winners": [
+    512398565994266626
+   ],
+   "required_role": null
+  },
+  {
+   "id": "4c9f1fcd-0227-4688-b671-87d695c033b3",
+   "prize": "Something really cool",
+   "num_winners": 1,
+   "time": "2023-08-01 00:45:49.782785",
+   "host": 512398565994266626,
+   "participants": [
+    512398565994266626
+   ],
+   "channel": 1135052505139658782,
+   "role": 698010181031690320,
+   "message": 1135750284904243301,
+   "ongoing": true,
+   "winners": [],
+   "required_role": 722816524183797800
+  },
+  {
+   "id": "35a2f2f8-5e42-4b5f-819b-0618aa44ca01",
+   "prize": "<@80528701850124288>",
+   "num_winners": 1,
+   "time": "2023-07-22 16:10:23.967342",
+   "host": 512398565994266626,
+   "participants": [],
+   "channel": 794680791710826496,
+   "role": null,
+   "message": 1132404313172480110,
+   "ongoing": true,
+   "winners": [],
+   "required_role": null
+  },
+  {
+   "id": "5ece5e8e-eaa8-4152-b7cf-754e3bb6a060",
+   "prize": "a not prize",
+   "num_winners": 1,
+   "time": "2023-07-22 00:31:24.000220",
+   "host": 512398565994266626,
+   "participants": [
+    512398565994266626
+   ],
+   "channel": 794680791710826496,
+   "role": null,
+   "message": 1132167905610580068,
+   "ongoing": false,
+   "winners": [
+    1120097106288459867
+   ],
+   "required_role": null
+  },
+  {
+   "id": "0d79b5d2-5ea0-4d8d-9a73-361052b66ee3",
+   "prize": "a good prize",
+   "num_winners": 1,
+   "time": "2023-07-22 00:26:44.660991",
+   "host": 512398565994266626,
+   "participants": [],
+   "channel": 794680791710826496,
+   "role": null,
+   "message": 1132166733378105356,
+   "ongoing": true,
+   "winners": [],
+   "required_role": null
+  },
+  {
+   "id": "b6aa9b98-0498-4b31-b071-4ab309d7631a",
+   "prize": "a bad prize",
+   "num_winners": 1,
+   "time": "2023-07-22 00:07:35.174944",
+   "host": 512398565994266626,
+   "participants": [],
+   "channel": 794680791710826496,
+   "role": null,
+   "message": 1132161914999423127,
+   "ongoing": true,
+   "winners": [],
+   "required_role": null
+  },
+  {
+   "id": "d11d443a-e04d-4b56-bfd0-f40eeadb4939",
+   "prize": "Totally a bad prize",
+   "num_winners": 1,
+   "time": "2023-07-22 00:00:44.102480",
+   "host": 512398565994266626,
+   "participants": [],
+   "channel": 794680791710826496,
+   "role": null,
+   "message": 1132160193048875028,
+   "ongoing": true,
+   "winners": [],
+   "required_role": null
+  },
+  {
+   "id": "2b627cfb-817e-4270-a49b-50ed01231a6d",
+   "prize": "Totally a good prize",
+   "num_winners": 1,
+   "time": "2023-07-21 23:57:00.251971",
+   "host": 512398565994266626,
+   "participants": [],
+   "channel": 794680791710826496,
+   "role": null,
+   "message": 1132159266774585375,
+   "ongoing": true,
+   "winners": [],
+   "required_role": null
+  },
+  {
+   "id": "b58e8819-7ae8-4ad2-9297-2091d8d98589",
+   "prize": "stuff",
+   "num_winners": 1,
+   "time": "2023-07-21 16:14:35.309366",
+   "host": 512398565994266626,
+   "participants": [
+    512398565994266626
+   ],
+   "channel": 794680791710826496,
+   "role": 737030359593517056,
+   "message": 1132042529227939840,
+   "ongoing": true,
+   "winners": [],
+   "required_role": 722816524183797800
+  },
+  {
+   "id": "a055db78-a65e-4b31-b5db-ff389aab7f70",
+   "prize": "a",
+   "num_winners": 1,
+   "time": "2023-07-21 17:07:25.938509",
+   "host": 512398565994266626,
+   "participants": [
+    512398565994266626
+   ],
+   "channel": 794680791710826496,
+   "role": 698010181031690320,
+   "message": 1132055552990662716,
+   "ongoing": true,
+   "winners": [],
+   "required_role": 723710905371721863
+  },
+  {
+   "id": "23031502-3279-4a29-9f0c-fe31c6795aa1",
+   "prize": "test",
+   "num_winners": 1,
+   "time": "2023-07-21 23:28:28.590917",
+   "host": 512398565994266626,
+   "participants": [],
+   "channel": 794680791710826496,
+   "role": null,
+   "message": 1132151449061695619,
+   "ongoing": true,
+   "winners": [],
+   "required_role": null
+  },
+  {
+   "id": "7ed61c33-d82d-490f-90c9-f9d518472218",
+   "prize": "test",
+   "num_winners": 1,
+   "time": "2023-07-21 23:30:40.472204",
+   "host": 512398565994266626,
+   "participants": [
+    512398565994266626,
+    1120097106288459867
+   ],
+   "channel": 794680791710826496,
+   "role": null,
+   "message": 1132151997936717835,
+   "ongoing": true,
+   "winners": [],
+   "required_role": null
+  },
+  {
+   "id": "6c1bea47-0d7d-4c05-8d5e-64fa65818adb",
+   "prize": "test",
+   "num_winners": 1,
+   "time": "2023-07-21 23:34:20.795127",
+   "host": 512398565994266626,
+   "participants": [
+    512398565994266626,
+    1120097106288459867
+   ],
+   "channel": 794680791710826496,
+   "role": null,
+   "message": 1132153431419801610,
+   "ongoing": true,
+   "winners": [],
+   "required_role": null
+  },
+  {
+   "id": "dfc47d0a-467f-4744-95da-06f7f9cbe55b",
+   "prize": "test",
+   "num_winners": 1,
+   "time": "2023-07-21 23:35:36.406720",
+   "host": 512398565994266626,
+   "participants": [
+    1120097106288459867
+   ],
+   "channel": 794680791710826496,
+   "role": null,
+   "message": 1132153910782590976,
+   "ongoing": false,
+   "winners": [
+    512398565994266626
+   ],
+   "required_role": null
+  },
+  {
+   "id": "ce988664-176f-49f6-a138-4877ebc6788f",
+   "prize": "BRU",
+   "num_winners": 1,
+   "time": "2023-07-21 23:40:13.872856",
+   "host": 512398565994266626,
+   "participants": [],
+   "channel": 794680791710826496,
+   "role": null,
+   "message": 1132155036034678875,
+   "ongoing": false,
+   "winners": [
+    512398565994266626
+   ],
+   "required_role": null
+  },
+  {
+   "id": "f8cfdcd0-d9c6-4702-a1d9-727980534fc9",
+   "prize": "BRU",
+   "num_winners": 1,
+   "time": "2023-07-21 23:41:04.315594",
+   "host": 512398565994266626,
+   "participants": [],
+   "channel": 794680791710826496,
+   "role": null,
+   "message": 1132155242633506826,
+   "ongoing": false,
+   "winners": [
+    512398565994266626
+   ],
+   "required_role": null
+  },
+  {
+   "id": "094b98d3-8ef3-4717-9e62-f9384e1b5ce6",
+   "prize": "BRU",
+   "num_winners": 1,
+   "time": "2023-07-21 23:41:51.608175",
+   "host": 512398565994266626,
+   "participants": [
+    512398565994266626
+   ],
+   "channel": 794680791710826496,
+   "role": null,
+   "message": 1132155440558510191,
+   "ongoing": false,
+   "winners": [
+    512398565994266626
+   ],
+   "required_role": null
+  },
+  {
+   "id": "6b8bf426-e7a5-42dd-aebc-6cd20afee227",
+   "prize": "BRU",
+   "num_winners": 1,
+   "time": "2023-07-21 23:44:44.592709",
+   "host": 512398565994266626,
+   "participants": [
+    512398565994266626
+   ],
+   "channel": 794680791710826496,
+   "role": null,
+   "message": 1132156164679938089,
+   "ongoing": true,
+   "winners": [],
+   "required_role": null
+  },
+  {
+   "id": "a726b79d-6699-4707-b41e-5cfb6d540ba2",
+   "prize": "BRU",
+   "num_winners": 1,
+   "time": "2023-07-21 23:45:54.693310",
+   "host": 512398565994266626,
+   "participants": [],
+   "channel": 794680791710826496,
+   "role": null,
+   "message": 1132156459522740257,
+   "ongoing": false,
+   "winners": [
+    512398565994266626
+   ],
+   "required_role": null
+  }
+ ]
+}

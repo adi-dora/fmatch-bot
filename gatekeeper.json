@@ -1,0 +1,24 @@
+{
+ "channel": 794680791710826496,
+ "rules": "1. No cursing 2. etc. **etc.**",
+ "link": "https://media.discordapp.net/attachments/794680791710826496/1135635402213040179/city.jpg?width=829&height=466",
+ "age": [
+  {
+   "label": 18,
+   "emoji": "<:aACpfp:746452464521445578>",
+   "role": 722816524183797800
+  },
+  {
+   "label": 19,
+   "emoji": "\ud83d\udc94",
+   "role": 684210268678389799
+  }
+ ],
+ "gender": [
+  {
+   "label": "Male",
+   "emoji": "<:Confirm:736236531907559508>",
+   "role": 723710905371721863
+  }
+ ]
+}
