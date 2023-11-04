@@ -6,4 +6,4 @@ with open("verification.json", "r") as f:
 def dump_verification_json(verification_json):
     # your code here
     with open('verification.json', 'w') as f:
-        json.dump(verification_json, f)
+        json.dump(verification_json, f, indent=1)
