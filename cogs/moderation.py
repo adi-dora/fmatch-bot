@@ -10,7 +10,7 @@ from discord.interactions import Interaction
 from discord.app_commands import Choice
 from discord.app_commands import AppCommandError
 
-from moderation_utils import moderation_json, dump_moderation_json
+from utils.moderation_utils import moderation_json, dump_moderation_json
 
 
 class Moderation(commands.Cog):

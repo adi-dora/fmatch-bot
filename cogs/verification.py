@@ -10,7 +10,7 @@ from discord.ext import commands, tasks
 from discord.interactions import Interaction
 from discord.app_commands import Choice
 from discord.app_commands import AppCommandError
-from verification_utils import verification_json, dump_verification_json
+from utils.verification_utils import verification_json, dump_verification_json
 
 
 class DeniedModal(discord.ui.Modal):
