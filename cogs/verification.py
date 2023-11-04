@@ -172,8 +172,8 @@ class Verification(commands.Cog):
         self,
         interaction: discord.Interaction,
         verification_type: str,
-        pose: discord.Attachment = None,
-        id: discord.Attachment = None,
+        pose: discord.Attachment | None,
+        id: discord.Attachment | None,
     ):
         if verification_type == 'age' and (pose is None or id is None):
             return await interaction.response.send_message('You must provide a pose and an ID to verify both gender and age!', ephemeral=True)
@@ -187,9 +187,12 @@ class Verification(commands.Cog):
             chan = interaction.guild.get_channel(
                 verification_json["verification_channel"]
             )
+            files = []
             pose = await pose.to_file()
             if verification_type == 'age':
                 id = await id.to_file()
+                files.append(id)
+            files.append(pose)
             roles = [
                 interaction.guild.get_role(role)
                 for role in verification_json["staff_roles"]
@@ -215,7 +218,7 @@ class Verification(commands.Cog):
                 " ".join(role.mention for role in roles),
                 embed=embed,
                 view=VerificationView(),
-                files=[id, pose],
+                files=files,
             )
             verification_json["verifications"][str(m.id)] = {
                 "user": interaction.user.id
