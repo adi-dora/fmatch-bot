@@ -13,6 +13,9 @@ from discord.app_commands import AppCommandError
 from utils.submission_utils import *
 
 
+
+
+
 class ReplyModal(discord.ui.Modal):
     def __init__(self):
         super().__init__(
@@ -27,7 +30,7 @@ class ReplyModal(discord.ui.Modal):
         self.add_item(self.reply)
 
     async def on_submit(self, interaction: Interaction) -> None:
-        await interaction.response.defer()
+        await interaction.response.send_message('Your reply to this confession has been posted!', ephemeral=True)
 
 
 class ReplyView(discord.ui.View):
@@ -42,21 +45,18 @@ class ReplyView(discord.ui.View):
     async def reply_button(
         self, interaction: discord.Interaction, button: discord.Button
     ):
-        try:
-            modal = ReplyModal()
-            await interaction.response.send_modal(modal)
-            await modal.wait()
-            await interaction.followup.send(
-                embed=discord.Embed(
-                    title="New Reply",
-                    description=modal.reply.value,
-                    color=discord.Color.purple(),
-                    timestamp=interaction.created_at,
-                )
+        reply_chan = interaction.guild.get_channel(submission_json['confession_reply_channel'])
+        modal = ReplyModal()
+        await interaction.response.send_modal(modal)
+        await modal.wait()
+        await reply_chan.send(f'{interaction.message.jump_url}',
+            embed=discord.Embed(
+                title="New Reply",
+                description=modal.reply.value,
+                color=discord.Color.purple(),
+                timestamp=interaction.created_at,
             )
-            print("done")
-        except:
-            traceback.print_exc()
+        )
 
 
 class ConfessionModal(discord.ui.Modal):
@@ -75,7 +75,7 @@ class ConfessionModal(discord.ui.Modal):
 
     async def on_submit(self, interaction: Interaction) -> None:
         reply_chan = interaction.guild.get_channel(
-            submission_json["confession_reply_channel"]
+            submission_json["confession_send_channel"]
         )
         await reply_chan.send(
             embed=discord.Embed(
@@ -172,18 +172,15 @@ class Submission(commands.Cog):
     @app_commands.command()
     @commands.has_permissions(administrator=True)
     async def suggestion(self, interaction: discord.Interaction):
-        try:
-            suggest_chan = interaction.guild.get_channel(
-                submission_json["suggestion_channel"]
-            )
-            m = await suggest_chan.send(
-                submission_json["suggestion_message"], view=SuggestionView()
-            )
-            submission_json["suggestion_id"] = m.id
-            dump_submission_json(submission_json)
-            await interaction.response.send_message("Suggestion message sent")
-        except:
-            traceback.print_exc()
+        suggest_chan = interaction.guild.get_channel(
+            submission_json["suggestion_channel"]
+        )
+        m = await suggest_chan.send(
+            submission_json["suggestion_message"], view=SuggestionView()
+        )
+        submission_json["suggestion_id"] = m.id
+        dump_submission_json(submission_json)
+        await interaction.response.send_message("Suggestion message sent")
 
     @app_commands.command()
     @commands.has_permissions(administrator=True)
