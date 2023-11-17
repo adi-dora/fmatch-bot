@@ -36,7 +36,7 @@ class CloseTicketView(discord.ui.View):
         self, interaction: discord.Interaction, button: discord.Button
     ):
         try:
-            with open("support.json", "r") as f:
+            with open("support_.json", "r") as f:
                 support = json.load(f)
             log_channel = interaction.guild.get_channel(support["log_channel"])
             for user in support["tickets"]:
@@ -71,7 +71,7 @@ class CloseTicketView(discord.ui.View):
 
             os.remove(f"./log_{self.member.name}.txt")
 
-            with open("support.json", "w") as f:
+            with open("support_.json", "w") as f:
                 json.dump(support, f, indent=1)
         except:
             traceback.print_exc()
@@ -81,7 +81,7 @@ class DropdownView(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
 
-    with open("support.json", "r") as f:
+    with open("support_.json", "r") as f:
         support = json.load(f)
 
     @discord.ui.select(
@@ -94,7 +94,7 @@ class DropdownView(discord.ui.View):
     async def issue_dropdown(
         self, interaction: discord.Interaction, select: discord.ui.Select
     ):
-        with open("support.json", "r") as f:
+        with open("support_.json", "r") as f:
             support = json.load(f)
         try:
             if str(interaction.user.id) in support["tickets"]:
@@ -138,7 +138,7 @@ class DropdownView(discord.ui.View):
             await m.pin()
             support["tickets"][interaction.user.id] = ticket.id
             support["last_message"][interaction.user.id] = str(datetime.datetime.now())
-            with open("support.json", "w") as f:
+            with open("support_.json", "w") as f:
                 json.dump(support, f, indent=1)
 
             await interaction.response.send_message(
@@ -156,7 +156,7 @@ class Support(commands.Cog):
 
     @tasks.loop(minutes=1)
     async def check_inactivity(self):
-        with open("support.json", "r") as f:
+        with open("support_.json", "r") as f:
             support = json.load(f)
         
         try:
@@ -188,7 +188,7 @@ class Support(commands.Cog):
                     await log_channel.send("Ticket closed for inactivity", file=discord.File(f"log_{member.name}.txt"))
 
                     os.remove(f"./log_{member.name}.txt")
-                    with open("support.json", "w") as f:
+                    with open("support_.json", "w") as f:
                         json.dump(support, f, indent = 1)
 
                     await chan.delete(reason=f"Deleted for inactivity")
@@ -197,7 +197,7 @@ class Support(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
-        with open("support.json", "r") as f:
+        with open("support_.json", "r") as f:
             support = json.load(f)
 
         for ticket in support["tickets"]:
@@ -208,7 +208,7 @@ class Support(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_remove(self, member: discord.Member):
-        with open("support.json", "r") as f:
+        with open("support_.json", "r") as f:
             support = json.load(f)
         
         temp = support['tickets'].copy()
@@ -238,7 +238,7 @@ class Support(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print("ready")
-        with open("support.json", "r") as f:
+        with open("support_.json", "r") as f:
             support = json.load(f)
 
         if support["message"] is None:
@@ -257,7 +257,7 @@ class Support(commands.Cog):
                     message_id=support["tickets"][ticket],
                 )
 
-        with open("support.json", "w") as f:
+        with open("support_.json", "w") as f:
             json.dump(support, f, indent=1)
         
         self.check_inactivity.start()
