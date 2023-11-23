@@ -41,7 +41,7 @@ class GenderView(discord.ui.View):
             )
             for gender in gate["gender"]
         ],
-        custom_id='gender'
+        custom_id="gender",
     )
     async def gender_select(
         self, interaction: discord.Interaction, select: discord.ui.Select
@@ -62,13 +62,23 @@ class GenderView(discord.ui.View):
             for gender in gate["gender"]:
                 if select.values[0] == gender["label"]:
                     gender_role = interaction.guild.get_role(gender["role"])
-                    await interaction.user.add_roles(*[gender_role, self.age])
+
+                    await interaction.user.add_roles(
+                        *[gender_role, self.age], reason="Added age and gender roles"
+                    )
                     await self.interaction.edit_original_response(
                         content="You have been granted access to the server!", view=None
                     )
+                    # Add roles you want added to people after they verify in the "roles_after_verification" field in the json
+                    await interaction.user.add_roles(
+                        *[
+                            interaction.guild.get_role(role)
+                            for role in gate["roles_after_verification"]
+                        ],
+                        reason="Extra roles after verification",
+                    )
 
                     break
-            
 
         except:
             traceback.print_exc()
@@ -92,24 +102,28 @@ class AgeView(discord.ui.View):
             )
             for age in gate["age"]
         ],
-        custom_id='age'
+        custom_id="age",
     )
     async def age_select(
         self, interaction: discord.Interaction, select: discord.ui.Select
     ):
-        
-        
-        with open("gatekeeper.json", "r") as f:
-            gate = json.load(f)
+        try:
+            with open("gatekeeper.json", "r") as f:
+                gate = json.load(f)
 
-        for age in gate["age"]:
-            if select.values[0] == str(age["label"]):
-                role_to_give = interaction.guild.get_role(age["role"])
-               
-                await self.interaction.delete_original_response()
-                await interaction.response.send_message('Select your gender', view=GenderView(role_to_give, interaction), ephemeral=True)
-                
-                
+            for age in gate["age"]:
+                if select.values[0] == str(age["label"]):
+                    role_to_give = interaction.guild.get_role(age["role"])
+
+                    await self.interaction.delete_original_response()
+                    await interaction.response.send_message(
+                        "Select your gender",
+                        view=GenderView(role_to_give, interaction),
+                        ephemeral=True,
+                    )
+
+        except:
+            traceback.print_exc()
 
 
 class GatekeeperView(discord.ui.View):
@@ -127,17 +141,15 @@ class GatekeeperView(discord.ui.View):
             "Select your age", view=AgeView(interaction), ephemeral=True
         )
 
-        # await interaction.user.add_roles(role, reason="User agreed to the rules")
-        # await interaction.user.send(
-        #     f"You have been granted access! Welcome to the server!"
-        # )
-
     @discord.ui.button(
         label="I Disagree", style=discord.ButtonStyle.red, custom_id="disagree"
     )
     async def deny(self, interaction: Interaction, button: discord.ui.Button):
         await interaction.response.defer()
         await interaction.user.kick(reason="User disagreed to the rules")
+        await interaction.user.send(
+            "You have been kicked from the server for disagreeing to the rules!"
+        )
 
     async def on_error(self, interaction: Interaction, error: Exception, item: Item):
         traceback.print_exc()
@@ -152,12 +164,17 @@ class ConfirmationView(discord.ui.View):
 
     @discord.ui.button(label="Confirm", style=discord.ButtonStyle.green)
     async def confirm(self, interaction: Interaction, button: discord.ui.Button):
+        with open("gatekeeper.json", "r") as f:
+            gate = json.load(f)
         if self.link:
             await self.channel.send(self.link)
 
-        await self.channel.send(self.message, view=GatekeeperView())
+        m = await self.channel.send(self.message, view=GatekeeperView())
+        gate["msg_id"] = m.id
         await interaction.message.edit(view=None)
         await interaction.response.send_message("The Gatekeeper message has been sent!")
+        with open("gatekeeper.json", "w") as f:
+            json.dump(gate, f, indent=1)
 
     @discord.ui.button(label="Deny", style=discord.ButtonStyle.red)
     async def deny(self, interaction: Interaction, button: discord.ui.Button):
@@ -171,7 +188,9 @@ class Gatekeeper(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        await self.bot.add_view(GatekeeperView())
+        with open("gatekeeper.json", "r") as f:
+            gate = json.load(f)
+        await self.bot.add_view(GatekeeperView(), gate["msg_id"])
 
     gatekeeper = app_commands.Group(
         name="gatekeeper",
@@ -335,6 +354,11 @@ class Gatekeeper(commands.Cog):
         with open("gatekeeper.json", "r") as f:
             gate = json.load(f)
 
+        if role >= interaction.guild.me.top_role:
+            return await interaction.response.send_message(
+                "This role is higher than my highest role, so I cannot give it to others!"
+            )
+
         if menu == "age":
             try:
                 name = int(name)
@@ -370,15 +394,15 @@ class Gatekeeper(commands.Cog):
             await interaction.response.send_message(
                 f"The gender ``{name}`` has been added!"
             )
-    
+
     with open("gatekeeper.json", "r") as f:
         gate = json.load(f)
-    
+
     final_names = []
-    for age in gate['age']:
+    for age in gate["age"]:
         final_names.append(age)
-    
-    for gender in gate['gender']:
+
+    for gender in gate["gender"]:
         final_names.append(gender)
 
     # @gatekeeper.command()
@@ -389,25 +413,15 @@ class Gatekeeper(commands.Cog):
     #     for age in gate['age']:
     #         if age['role'] == role:
     #             gate['age'].remove(age)
-        
+
     #     for gender in gate['gender']:
     #         if gender['role'] == role:
     #             gate['gender'].remove(gender)
-        
+
     #     with open('gatekeeper.json', 'w') as f:
     #         json.dump(gate,f)
-        
+
     #     await interaction.response.send_message('The role has been removed from the menu!')
-        
-
-        
-
-    
-
-        
-
-
-
 
 
 async def setup(bot):
