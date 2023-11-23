@@ -1,16 +1,7 @@
 import discord
 import random
-from discord import message, ui, app_commands
+from discord import app_commands
 from discord.ext import commands
-from typing import Literal, Optional
-from discord.ext.commands import Greedy, Context
-import asyncio
-from datetime import date, datetime, timedelta
-from discord.ext import tasks
-import json
-import os
-import traceback
-import time
 
 
 class Misc(commands.Cog):

@@ -1,24 +1,11 @@
 import json
-import random
 import traceback
-from typing import Optional
-from unicodedata import name
 import discord
-import datetime
-from discord.ext import commands, tasks
-from discord.interactions import Interaction
-import uuid
-from dateutil import parser
-import typing
-
-from typing_extensions import Annotated
+from discord.ext import commands
 
 
-from discord import Permissions, app_commands
+from discord import app_commands
 from datetime import datetime as dt
-
-from discord.app_commands import Choice
-from discord.app_commands import AppCommandError
 
 
 class DeleteVcConfirmation(discord.ui.View):
@@ -55,21 +42,16 @@ class VC(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    
     @commands.Cog.listener()
     async def on_member_update(self, before: discord.Member, after: discord.Member):
-        with open('vc.json', 'r') as f:
+        with open("vc.json", "r") as f:
             vc = json.load(f)
-        
-        
-        if before.guild.get_role(vc['role']) not in after.roles:
-            for channel in vc['channels']:
-                if channel['owner'] == after.id:
-                    channel = before.guild.get_channel(channel['id'])
-                    await channel.delete(reason='Lost required role')
 
-        
-        
+        if before.guild.get_role(vc["role"]) not in after.roles:
+            for channel in vc["channels"]:
+                if channel["owner"] == after.id:
+                    channel = before.guild.get_channel(channel["id"])
+                    await channel.delete(reason="Lost required role")
 
     vc = app_commands.Group(
         name="vc", description="Manage your own private Voice Channels!"
@@ -298,8 +280,8 @@ class VC(commands.Cog):
                 channel = interaction.guild.get_channel(chan["id"])
                 overwrites = channel.overwrites
                 overwrites[user] = discord.PermissionOverwrite(
-                                    view_channel=True, connect=True, speak=True, stream=True
-                                )
+                    view_channel=True, connect=True, speak=True, stream=True
+                )
                 await channel.edit(
                     overwrites=overwrites,
                     reason=f"Added {user.display_name} to private VC by {interaction.user.display_name}",

@@ -1,20 +1,14 @@
 import json
 import random
 import traceback
-from typing import Optional
-from unicodedata import name
 import discord
 import datetime
-from discord.ext import commands, tasks
+from discord.ext import commands
 from discord.interactions import Interaction
 import uuid
 from dateutil import parser
-import typing
 
-from typing_extensions import Annotated
-
-
-from discord import Permissions, app_commands
+from discord import app_commands
 from datetime import datetime as dt
 
 from discord.app_commands import Choice

@@ -1,24 +1,14 @@
 import json
 import random
 import traceback
-from typing import Optional
-from unicodedata import name
 import discord
-import datetime
-from discord.ext import commands, tasks
+from discord.ext import commands
 from discord.interactions import Interaction
-import uuid
 from dateutil import parser
-import typing
-
-from typing_extensions import Annotated
 
 
-from discord import Permissions, app_commands
+from discord import app_commands
 from datetime import datetime as dt
-
-from discord.app_commands import Choice
-from discord.app_commands import AppCommandError
 
 
 class MarriageView(discord.ui.View):
@@ -154,7 +144,7 @@ class Marriage(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @app_commands.command(description='Propose to marry a user!')
+    @app_commands.command(description="Propose to marry a user!")
     @app_commands.describe(member="The user you want to marry")
     async def propose(self, interaction: Interaction, member: discord.Member):
         with open("marriage.json", "r") as f:
@@ -173,9 +163,11 @@ class Marriage(commands.Cog):
                 "children": [],
                 "parents": [],
             }
-        
+
         if member.id == interaction.user.id:
-            return await interaction.response.send_message('You cannot marry yourself!', ephemeral=True)
+            return await interaction.response.send_message(
+                "You cannot marry yourself!", ephemeral=True
+            )
 
         if marriage[str(interaction.user.id)]["spouse"] is not None:
             spouse = interaction.guild.get_member(
@@ -340,7 +332,7 @@ class Marriage(commands.Cog):
 
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    @app_commands.command(description='Emancipate from your parents!')
+    @app_commands.command(description="Emancipate from your parents!")
     async def emancipate(self, interaction: discord.Interaction):
         with open("marriage.json", "r") as f:
             marriage = json.load(f)
@@ -394,7 +386,7 @@ class Marriage(commands.Cog):
                 )
             )
 
-    @app_commands.command(description='Disown a child you adopted!')
+    @app_commands.command(description="Disown a child you adopted!")
     async def disown(self, interaction: discord.Interaction, child_id: str):
         with open("marriage.json", "r") as f:
             marriage = json.load(f)
@@ -444,7 +436,7 @@ class Marriage(commands.Cog):
             and interaction.guild.get_member(child["user"]) is not None
         ]
 
-    @app_commands.command(description='Divorce your significant other!')
+    @app_commands.command(description="Divorce your significant other!")
     @app_commands.describe(reason="Why did it all fall apart?")
     async def divorce(self, interaction: discord.Interaction, reason: str | None):
         with open("marriage.json", "r") as f:
@@ -486,7 +478,7 @@ class Marriage(commands.Cog):
             "You have filed for divorce!", ephemeral=True
         )
 
-    @app_commands.command(description='Adopt a user!')
+    @app_commands.command(description="Adopt a user!")
     async def adopt(self, interaction: discord.Interaction, child: discord.Member):
         try:
             with open("marriage.json", "r") as f:
@@ -577,7 +569,7 @@ class Marriage(commands.Cog):
         except:
             traceback.print_exc()
 
-    @app_commands.command(description='View your relationship profile!')
+    @app_commands.command(description="View your relationship profile!")
     async def profile(
         self, interaction: discord.Interaction, user: discord.Member = None
     ):

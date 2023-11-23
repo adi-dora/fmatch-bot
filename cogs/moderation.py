@@ -5,7 +5,7 @@ import typing
 
 import discord
 from discord import app_commands
-from discord.ext import commands, tasks
+from discord.ext import commands
 from discord.interactions import Interaction
 from discord.app_commands import Choice
 from discord.app_commands import AppCommandError
@@ -14,7 +14,6 @@ from utils.moderation_utils import moderation_json, dump_moderation_json
 
 
 class Moderation(commands.Cog):
-    
     def __init__(self, bot):
         self.bot = bot
 
@@ -35,8 +34,6 @@ class Moderation(commands.Cog):
         reason: int,
         proof: discord.Attachment,
     ):
-        
-
         if moderation_json["log_channel"] is None:
             return await interaction.response.send_message(
                 "The log channel has not been set up."
@@ -91,9 +88,11 @@ class Moderation(commands.Cog):
 
         embed.add_field(name="Banned by", value=interaction.user.mention, inline=False)
 
-        embed.add_field(name="Reason", value=moderation_json["rules"][reason], inline=False)
+        embed.add_field(
+            name="Reason", value=moderation_json["rules"][reason], inline=False
+        )
         proof = await proof.to_file()
-        
+
         await log.send(file=proof, embed=embed)
 
         if str(user.id) in moderation_json["history"]:
@@ -104,15 +103,17 @@ class Moderation(commands.Cog):
     @app_commands.command(description="Timeout a user!")
     @commands.has_permissions(moderate_members=True)
     @app_commands.choices(
-        unit=
-        [
+        unit=[
             Choice(name="Seconds", value="seconds"),
             Choice(name="Minutes", value="minutes"),
             Choice(name="Hours", value="hours"),
             Choice(name="Days", value="days"),
-            Choice(name="Weeks", value="weeks")
+            Choice(name="Weeks", value="weeks"),
         ],
-        reason = [Choice(name = item, value = count) for count, item in enumerate(moderation_json['rules'])]
+        reason=[
+            Choice(name=item, value=count)
+            for count, item in enumerate(moderation_json["rules"])
+        ],
     )
     async def timeout(
         self,
@@ -124,26 +125,30 @@ class Moderation(commands.Cog):
         proof: discord.Attachment,
     ):
         if user.is_timed_out():
-            return await interaction.response.send_message('This user is already timed out!')
-        
+            return await interaction.response.send_message(
+                "This user is already timed out!"
+            )
+
         until = datetime.datetime.now()
 
-        if unit == 'weeks':
+        if unit == "weeks":
             until += datetime.timedelta(weeks=amount)
-        if unit == 'days':
+        if unit == "days":
             until += datetime.timedelta(days=amount)
 
-        if unit == 'hours':
+        if unit == "hours":
             until += datetime.timedelta(hours=amount)
-        if unit == 'minutes':
+        if unit == "minutes":
             until += datetime.timedelta(minutes=amount)
 
-        if unit == 'seconds':
-            until+= datetime.timedelta(seconds=amount)
+        if unit == "seconds":
+            until += datetime.timedelta(seconds=amount)
         try:
-            await user.timeout(until, reason = reason)
+            await user.timeout(until, reason=reason)
         except:
-            return await interaction.response.send_message('Unable to timeout user. Make sure you formatted the command correctly and the time is less than 28 days, and try again.')
+            return await interaction.response.send_message(
+                "Unable to timeout user. Make sure you formatted the command correctly and the time is less than 28 days, and try again."
+            )
         else:
             log = interaction.guild.get_channel(moderation_json["log_channel"])
             embed = discord.Embed(
@@ -155,11 +160,13 @@ class Moderation(commands.Cog):
 
             embed.add_field(name="User ID", value=user.id, inline=False)
 
-            embed.add_field(name="Put in timeout by", value=interaction.user.mention, inline=False)
-            embed.add_field(name= 'Reason', value = reason, inline=False)
-            
+            embed.add_field(
+                name="Put in timeout by", value=interaction.user.mention, inline=False
+            )
+            embed.add_field(name="Reason", value=reason, inline=False)
+
             proof = await proof.to_file()
-            await log.send(file = proof, embed=embed)
+            await log.send(file=proof, embed=embed)
             log = interaction.guild.get_channel(moderation_json["log_channel"])
             embed = discord.Embed(
                 timestamp=interaction.created_at,
@@ -168,26 +175,28 @@ class Moderation(commands.Cog):
             )
             embed.set_author(name=user, icon_url=user.display_avatar.url)
 
-            embed.add_field(name= 'Reason', value = reason, inline=False)
+            embed.add_field(name="Reason", value=reason, inline=False)
 
-            embed.add_field(name="Put in timeout by", value=interaction.user.mention, inline=False)
+            embed.add_field(
+                name="Put in timeout by", value=interaction.user.mention, inline=False
+            )
 
-            await user.send(embed = embed)
-            await interaction.response.send_message('The user has been put in timeout successfully!')
-
-        
+            await user.send(embed=embed)
+            await interaction.response.send_message(
+                "The user has been put in timeout successfully!"
+            )
 
     @app_commands.command(description="Remove timeout from a user!")
     @commands.has_permissions(moderate_members=True)
     async def timeout(
-        self,
-        interaction: discord.Interaction,
-        user: discord.Member | discord.User
+        self, interaction: discord.Interaction, user: discord.Member | discord.User
     ):
         if not user.is_timed_out():
-            return await interaction.response.send_message('This user is not already timed out!')
-        
-        await user.timeout(None, reason=f'Removed timeout by {interaction.user.name}')
+            return await interaction.response.send_message(
+                "This user is not already timed out!"
+            )
+
+        await user.timeout(None, reason=f"Removed timeout by {interaction.user.name}")
         log = interaction.guild.get_channel(moderation_json["log_channel"])
         embed = discord.Embed(
             timestamp=interaction.created_at,
@@ -198,8 +207,10 @@ class Moderation(commands.Cog):
 
         embed.add_field(name="User ID", value=user.id, inline=False)
 
-        embed.add_field(name="Removed timeout by", value=interaction.user.mention, inline=False)
-        
+        embed.add_field(
+            name="Removed timeout by", value=interaction.user.mention, inline=False
+        )
+
         await log.send(embed=embed)
         log = interaction.guild.get_channel(moderation_json["log_channel"])
         embed = discord.Embed(
@@ -209,16 +220,18 @@ class Moderation(commands.Cog):
         )
         embed.set_author(name=user, icon_url=user.display_avatar.url)
 
-        embed.add_field(name="Removed from timeout by", value=interaction.user.mention, inline=False)
+        embed.add_field(
+            name="Removed from timeout by", value=interaction.user.mention, inline=False
+        )
 
-        await user.send(embed = embed)
-        await interaction.response.send_message('The user has been removed from timeout successfully!')
-
+        await user.send(embed=embed)
+        await interaction.response.send_message(
+            "The user has been removed from timeout successfully!"
+        )
 
     @app_commands.command(description="Unban a user from the server!")
     @commands.has_permissions(ban_members=True)
     async def unban(self, interaction: discord.Interaction, user: discord.User):
-
         try:
             if moderation_json["log_channel"] is None:
                 return await interaction.response.send_message(
@@ -229,7 +242,7 @@ class Moderation(commands.Cog):
                 return await interaction.response.send_message(
                     "The log channel was not found! Make sure the channel exists and I have access to it!"
                 )
-            
+
             await interaction.guild.fetch_ban(user)
             await interaction.guild.unban(user)
             try:
@@ -250,7 +263,9 @@ class Moderation(commands.Cog):
 
             embed.add_field(name="User ID", value=user.id, inline=False)
 
-            embed.add_field(name="Unbanned by", value=interaction.user.mention, inline=False)
+            embed.add_field(
+                name="Unbanned by", value=interaction.user.mention, inline=False
+            )
 
             await log.send(embed=embed)
 
@@ -318,14 +333,17 @@ class Moderation(commands.Cog):
         )
 
         embed = discord.Embed(
-            description=f"{user.mention} has been warned! They now have `{len(moderation_json['history'][str(user.id)])}` warnings!", color=0xFF6666
+            description=f"{user.mention} has been warned! They now have `{len(moderation_json['history'][str(user.id)])}` warnings!",
+            color=0xFF6666,
         )
 
         embed.set_author(name=user, icon_url=user.display_avatar.url)
 
         embed.add_field(name="User ID", value=f"{user.id}", inline=False)
 
-        embed.add_field(name="Warned by", value=f"{interaction.user.mention}", inline=False)
+        embed.add_field(
+            name="Warned by", value=f"{interaction.user.mention}", inline=False
+        )
 
         embed.add_field(name="Warn reason", value=f"{reason}", inline=False)
 
@@ -342,7 +360,6 @@ class Moderation(commands.Cog):
         interaction: discord.Interaction,
         user: typing.Union[discord.Member, discord.User] = None,
     ):
-
         warns = 0
         try:
             warns = len(
@@ -391,7 +408,6 @@ class Moderation(commands.Cog):
         reason: int,
         proof: discord.Attachment,
     ):
-
         if moderation_json["log_channel"] is None:
             return await interaction.response.send_message(
                 "The log channel has not been set up."
@@ -425,11 +441,10 @@ class Moderation(commands.Cog):
             total_time = time * 604800
 
         if mute_role in user.roles:
-            
             return await interaction.response.send_message(
                 f"{user.mention} is already muted!"
             )
-            
+
         await user.add_roles(mute_role, reason=reason)
         embed = discord.Embed(
             description=f"You have been muted in **{interaction.guild.name}**!",
@@ -510,7 +525,8 @@ class Moderation(commands.Cog):
 
         except:
             embed = discord.Embed(
-                description=f"Error unmuting {user.mention} ({user.name})!", color=0xFF6666
+                description=f"Error unmuting {user.mention} ({user.name})!",
+                color=0xFF6666,
             )
 
             embed.set_author(name=user, icon_url=user.display_avatar.url)
@@ -530,11 +546,8 @@ class Moderation(commands.Cog):
     )
     @commands.has_permissions(manage_roles=True)
     async def unmute(
-        self,
-        interaction: discord.Interaction,
-        user: discord.Member = None
+        self, interaction: discord.Interaction, user: discord.Member = None
     ):
-
         if moderation_json["mute_role"] is None:
             return await interaction.response.send_message(
                 "The mute role has not been set up.`"
@@ -562,13 +575,19 @@ class Moderation(commands.Cog):
         if user is None:
             for user in mute_role.members:
                 try:
-                    await user.remove_roles(mute_role, reason=f'Unmute by {interaction.user.name}')
+                    await user.remove_roles(
+                        mute_role, reason=f"Unmute by {interaction.user.name}"
+                    )
                     embed = discord.Embed(
                         description=f"You have been unmuted in **{interaction.guild.name}**!",
                         color=0xFF6666,
                     )
                     embed.set_author(name=user, icon_url=user.display_avatar.url)
-                    embed.add_field(name="Reason", value=f'Unmute by {interaction.user.name}', inline=False)
+                    embed.add_field(
+                        name="Reason",
+                        value=f"Unmute by {interaction.user.name}",
+                        inline=False,
+                    )
                     embed.timestamp = interaction.created_at
                     await user.send(embed=embed)
                     moderation_json["muted"].remove(user.id)
@@ -578,7 +597,9 @@ class Moderation(commands.Cog):
                     embed.set_author(name=user, icon_url=user.display_avatar.url)
                     embed.add_field(name="User ID", value=f"{user.id}", inline=False)
                     embed.add_field(
-                        name="Unmute reason", value=f'Unmute by {interaction.user.name}', inline=False
+                        name="Unmute reason",
+                        value=f"Unmute by {interaction.user.name}",
+                        inline=False,
                     )
                     embed.timestamp = interaction.created_at
                     await log.send(embed=embed)
@@ -593,7 +614,11 @@ class Moderation(commands.Cog):
                     embed.add_field(
                         name="Muted by", value=f"{interaction.user}", inline=False
                     )
-                    embed.add_field(name="Mute reason", value=f'Unmute by {interaction.user.name}', inline=False)
+                    embed.add_field(
+                        name="Mute reason",
+                        value=f"Unmute by {interaction.user.name}",
+                        inline=False,
+                    )
                     embed.timestamp = interaction.created_at
                     await log.send(embed=embed)
                     failed += 1
@@ -614,7 +639,9 @@ class Moderation(commands.Cog):
                 color=0xFF6666,
             )
             embed.set_author(name=user, icon_url=user.display_avatar.url)
-            embed.add_field(name="Reason", value=f'Unmute by {interaction.user.name}', inline=False)
+            embed.add_field(
+                name="Reason", value=f"Unmute by {interaction.user.name}", inline=False
+            )
             embed.timestamp = interaction.created_at
             await user.send(embed=embed)
             moderation_json["muted"].remove(user.id)
@@ -623,7 +650,11 @@ class Moderation(commands.Cog):
             )
             embed.set_author(name=user, icon_url=user.display_avatar.url)
             embed.add_field(name="User ID", value=f"{user.id}", inline=False)
-            embed.add_field(name="Unmute reason", value=f'Unmute by {interaction.user.name}', inline=False)
+            embed.add_field(
+                name="Unmute reason",
+                value=f"Unmute by {interaction.user.name}",
+                inline=False,
+            )
             embed.timestamp = interaction.created_at
             await log.send(embed=embed)
             dump_moderation_json(moderation_json)
@@ -635,7 +666,11 @@ class Moderation(commands.Cog):
             embed.set_author(name=user, icon_url=user.display_avatar.url)
             embed.add_field(name="User ID", value=f"{user.id}", inline=False)
             embed.add_field(name="Muted by", value=f"{interaction.user}", inline=False)
-            embed.add_field(name="Mute reason", value=f'Unmute by {interaction.user.name}', inline=False)
+            embed.add_field(
+                name="Mute reason",
+                value=f"Unmute by {interaction.user.name}",
+                inline=False,
+            )
             embed.timestamp = interaction.created_at
             await log.send(embed=embed)
             return await interaction.response.send_message(
@@ -660,7 +695,6 @@ class Moderation(commands.Cog):
     async def log(
         self, interaction: discord.Interaction, channel: discord.TextChannel | None
     ):
-
         if channel is None:
             if moderation_json["log_channel"] is None:
                 return await interaction.response.send_message(
@@ -679,7 +713,6 @@ class Moderation(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member: discord.Member):
-
         if member.id in moderation_json["muted"]:
             await member.add_roles(member.guild.get_role(moderation_json["mute_role"]))
             embed = discord.Embed(
@@ -689,7 +722,9 @@ class Moderation(commands.Cog):
             embed.add_field(name="User ID", value=f"{member.id}", inline=False)
             embed.add_field(name="Muted by", value=f"Re-join to server", inline=False)
             embed.timestamp = datetime.datetime.now()
-            await member.guild.get_channel(moderation_json["log_channel"]).send(embed=embed)
+            await member.guild.get_channel(moderation_json["log_channel"]).send(
+                embed=embed
+            )
 
     async def cog_app_command_error(
         self, interaction: Interaction, error: AppCommandError

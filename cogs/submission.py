@@ -1,16 +1,9 @@
-import json
 import traceback
-import datetime
-import asyncio
-import typing
 
 import discord
 from discord import app_commands
-from discord.ext import commands, tasks
+from discord.ext import commands
 from discord.interactions import Interaction
-from discord.app_commands import Choice
-from discord.app_commands import AppCommandError
-from discord.ui.item import Item
 from utils.submission_utils import *
 
 
@@ -407,8 +400,12 @@ class Submission(commands.Cog):
     async def on_ready(self):
         try:
             server = self.bot.get_guild(submission_json["server_id"])
-            self.bot.add_view(SuggestionView(), message_id=submission_json["suggestion_id"])
-            self.bot.add_view(ConfessionView(), message_id=submission_json["confession_id"])
+            self.bot.add_view(
+                SuggestionView(), message_id=submission_json["suggestion_id"]
+            )
+            self.bot.add_view(
+                ConfessionView(), message_id=submission_json["confession_id"]
+            )
             for id in submission_json["confessions"]:
                 self.bot.add_view(ReplyView(), message_id=id)
 

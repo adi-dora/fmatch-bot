@@ -1,24 +1,11 @@
 import json
-import random
 import traceback
-from typing import Optional
-from unicodedata import name
 import discord
 import datetime
 from discord.ext import commands, tasks
-from discord.interactions import Interaction
 from dateutil import parser
-import typing
 import os
-import io
 import asyncio
-
-
-from discord import Permissions, app_commands
-from datetime import datetime as dt
-
-from discord.app_commands import Choice
-from discord.app_commands import AppCommandError
 
 
 class CloseTicketView(discord.ui.View):
@@ -42,30 +29,27 @@ class CloseTicketView(discord.ui.View):
             for user in support["tickets"]:
                 if support["tickets"][user] == interaction.channel.id:
                     del support["tickets"][user]
-                    del support['last_message'][user]
+                    del support["last_message"][user]
                     break
             with open(f"log_{self.member.name}.txt", "a") as f:
                 async for msg in interaction.channel.history(limit=None):
                     time = msg.created_at
 
-                    second_time = time - datetime.timedelta(hours = 4)
+                    second_time = time - datetime.timedelta(hours=4)
 
                     second_time = second_time.strftime("%I:%M %p")
 
                     format_time = time.strftime("%A, %d %B %Y %I:%M %p")
-                    f.write(
-                        f'[{format_time}] - {msg.author.name}: "{msg.content}"\n'
-                    )
+                    f.write(f'[{format_time}] - {msg.author.name}: "{msg.content}"\n')
 
             await log_channel.send(
                 f"New ticket closed by {interaction.user.mention}",
                 file=discord.File(f"./log_{self.member.name}.txt"),
             )
 
-            await interaction.response.send_message('Ticket closing...')
+            await interaction.response.send_message("Ticket closing...")
 
             await asyncio.sleep(5)
-
 
             await interaction.channel.delete(reason="Ticket closed by user")
 
@@ -110,7 +94,9 @@ class DropdownView(discord.ui.View):
                 category_to_create = interaction.guild.get_channel(support["category"])
 
             overwrites = category_to_create.overwrites
-            overwrites[interaction.user] = discord.PermissionOverwrite(read_messages=True)
+            overwrites[interaction.user] = discord.PermissionOverwrite(
+                read_messages=True
+            )
 
             ticket = await interaction.guild.create_text_channel(
                 f"{interaction.user.name}",
@@ -145,7 +131,7 @@ class DropdownView(discord.ui.View):
                 f"A new ticket has been created in {ticket.mention} for your issue.",
                 ephemeral=True,
             )
-        
+
         except:
             traceback.print_exc()
 
@@ -158,13 +144,14 @@ class Support(commands.Cog):
     async def check_inactivity(self):
         with open("support_.json", "r") as f:
             support = json.load(f)
-        
+
         try:
-            temp = support['last_message'].copy()
+            temp = support["last_message"].copy()
 
             for ticket in temp:
                 if (
-                    datetime.datetime.now() - parser.parse(support["last_message"][ticket])
+                    datetime.datetime.now()
+                    - parser.parse(support["last_message"][ticket])
                 ).total_seconds() > support["delay_to_close"]:
                     del support["last_message"][ticket]
                     chan = self.bot.get_channel(support["tickets"][ticket])
@@ -175,21 +162,24 @@ class Support(commands.Cog):
                         async for msg in chan.history(limit=None, oldest_first=False):
                             time = msg.created_at
 
-                            second_time = time - datetime.timedelta(hours = 4)
+                            second_time = time - datetime.timedelta(hours=4)
 
                             second_time = second_time.strftime("%I:%M %p")
 
                             format_time = time.strftime("%A, %d %B %Y %I:%M %p")
-                            
+
                             f.write(
                                 f'[{format_time}] - {msg.author.name}: "{msg.content}"\n'
                             )
 
-                    await log_channel.send("Ticket closed for inactivity", file=discord.File(f"log_{member.name}.txt"))
+                    await log_channel.send(
+                        "Ticket closed for inactivity",
+                        file=discord.File(f"log_{member.name}.txt"),
+                    )
 
                     os.remove(f"./log_{member.name}.txt")
                     with open("support_.json", "w") as f:
-                        json.dump(support, f, indent = 1)
+                        json.dump(support, f, indent=1)
 
                     await chan.delete(reason=f"Deleted for inactivity")
         except:
@@ -210,28 +200,29 @@ class Support(commands.Cog):
     async def on_member_remove(self, member: discord.Member):
         with open("support_.json", "r") as f:
             support = json.load(f)
-        
-        temp = support['tickets'].copy()
+
+        temp = support["tickets"].copy()
 
         if member.id in temp.keys():
             chan = member.guild.get_channel(support["tickets"][member.id])
-            del support['tickets'][member.id]
+            del support["tickets"][member.id]
             await chan.delete(reason=f"Ticket user {member.name} left server")
             log_channel = member.guild.get_channel(support["log_channel"])
             with open(f"log_{member.name}.txt", "a") as f:
                 async for msg in chan.history(limit=None):
                     time = msg.created_at
 
-                    second_time = time - datetime.timedelta(hours = 4)
+                    second_time = time - datetime.timedelta(hours=4)
 
                     second_time = second_time.strftime("%I:%M %p")
 
                     format_time = time.strftime("%A, %d %B %Y %I:%M %p")
-                    f.write(
-                        f'[{format_time}] - {msg.author.name}: "{msg.content}"\n'
-                    )
+                    f.write(f'[{format_time}] - {msg.author.name}: "{msg.content}"\n')
 
-                await log_channel.send(f"Ticket closed - member {member.mention} left server", file=discord.File(f'log_{member.name}.txt'))
+                await log_channel.send(
+                    f"Ticket closed - member {member.mention} left server",
+                    file=discord.File(f"log_{member.name}.txt"),
+                )
 
             os.remove(f"./log_{member.name}.txt")
 
@@ -259,10 +250,8 @@ class Support(commands.Cog):
 
         with open("support_.json", "w") as f:
             json.dump(support, f, indent=1)
-        
-        self.check_inactivity.start()
-        
 
+        self.check_inactivity.start()
 
 
 async def setup(bot):
