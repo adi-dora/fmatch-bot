@@ -30,8 +30,6 @@ class GiveawayView(discord.ui.View):
         for giveaway in giveaways["giveaways"]:
             if giveaway["message"] == interaction.message.id:
                 if interaction.user.id in giveaway["participants"]:
-                    
-
                     return await interaction.followup.send(
                         "You have already entered the giveaway!\n", ephemeral=True
                     )
@@ -41,9 +39,9 @@ class GiveawayView(discord.ui.View):
                     required_role is not None
                     and required_role not in interaction.user.roles
                 ):
-                    
                     return await interaction.followup.send(
-                        f"You don't have the required role ``{required_role.name}`` for this giveaway!\n", ephemeral=True
+                        f"You don't have the required role ``{required_role.name}`` for this giveaway!\n",
+                        ephemeral=True,
                     )
 
                 giveaway["participants"].append(interaction.user.id)
@@ -55,7 +53,6 @@ class GiveawayView(discord.ui.View):
         with open("giveaways.json", "w") as f:
             json.dump(giveaways, f, indent=1)
 
-        
         await interaction.followup.send(
             "You have been entered into the giveaway!\n", ephemeral=True
         )
@@ -469,7 +466,8 @@ class Giveaway(commands.Cog):
                         f'{", ".join(winner.mention for winner in winners)} won the giveaway! Make sure to claim soon or the giveaway wll be rerolled!'
                     )
                     await message.edit(
-                        content=f'Giveaway Ended! Winner: {", ".join(winner.mention for winner in winners) if len(winners) != 0 else "None"}!', view=None
+                        content=f'Giveaway Ended! Winner: {", ".join(winner.mention for winner in winners) if len(winners) != 0 else "None"}!',
+                        view=None,
                     )
 
                     with open("giveaways.json", "w") as f:

@@ -1,8 +1,5 @@
 import json
 import traceback
-import datetime
-import asyncio
-import typing
 
 import discord
 from discord import app_commands
@@ -99,8 +96,46 @@ class VerificationView(discord.ui.View):
     async def gender_verified_button(
         self, interaction: discord.Interaction, button: discord.Button
     ):
-        # TODO: Get gender data then verify gender
-        await interaction.response.send_message("Not yet implemented; need gender data")
+        await interaction.message.edit(view=discord.ui.View())
+        try:
+            user = interaction.guild.get_member(
+                verification_json["verifications"][str(interaction.message.id)]["user"]
+            )
+            del verification_json["verifications"][str(interaction.message.id)]
+            dump_verification_json(verification_json)
+        except KeyError:
+            return await interaction.response.send_message(
+                "There was an error with this verification request! Please ask the user to resubmit."
+            )
+            
+        
+        male_role = interaction.guild.get_role(verification_json['male_role'])
+        female_role = interaction.guild.get_role(verification_json['female_role'])
+        m_to_f_role = interaction.guild.get_role(verification_json['trans_m_to_f_role'])
+        f_to_m_role = interaction.guild.get_role(verification_json['trans_f_to_m_role'])
+        if male_role in user.roles:
+            await user.add_roles(interaction.guild.get_role(verification_json['male_gender_verified_role']))
+            await interaction.response.send_message("The user has been successfully verified as a Male!")
+            await user.send("You have been verified as a Male!")
+        elif female_role in user.roles:
+            await user.add_roles(interaction.guild.get_role(verification_json['female_gender_verified_role']))
+            await interaction.response.send_message("The user has been successfully verified as a Female!")
+            await user.send("You have been verified as a Female!")
+        elif m_to_f_role in user.roles:
+            await user.add_roles(interaction.guild.get_role(verification_json['m_to_f_verified_role']))
+            await interaction.response.send_message("The user has been successfully verified as a Trans Male to Female!")
+            await user.send("You have been verified as a Trans Male to Female!")
+        
+        elif f_to_m_role in user.roles:
+            await user.add_roles(interaction.guild.get_role(verification_json['f_to_m_verified_role']))
+            await interaction.response.send_message("The user has been successfully verified as a Trans Female to Male!")
+            await user.send("You have been verified as a Trans Female to Male!")
+                                 
+        
+        else:
+            return await interaction.response.send_message("An error occurred! This user does not have any gender roles!")
+        gender_unverified_role = interaction.guild.get_role(verification_json['gender_unverified_role'])
+        await user.remove_roles(gender_unverified_role, reason='User verified gender')
 
     @discord.ui.button(label="18+ Verified", custom_id="age_button")
     async def age_verified_button(
@@ -110,11 +145,13 @@ class VerificationView(discord.ui.View):
             adult_role = interaction.guild.get_role(
                 verification_json["18_verified_role"]
             )
+            age_unverified_role = interaction.guild.get_role(verification_json['age_unverified_role'])
             user = interaction.guild.get_member(
                 verification_json["verifications"][str(interaction.message.id)]["user"]
             )
 
-            await user.add_roles(adult_role)
+            await user.add_roles(adult_role, reason='Age verified')
+            await user.remove_roles(age_unverified_role, reason='Age verified')
             await user.send(
                 embed=discord.Embed(
                     title="Verification Accepted",
@@ -168,18 +205,26 @@ class Verification(commands.Cog):
             Choice(name="Age Verified", value="age")
         ]
     )
+    @app_commands.describe(id='Only provide a valid ID if you ae verifying age!')
     async def verify(
         self,
         interaction: discord.Interaction,
         verification_type: str,
-        pose: discord.Attachment | None,
+        pose: discord.Attachment,
         id: discord.Attachment | None,
     ):
-        if verification_type == 'age' and (pose is None or id is None):
-            return await interaction.response.send_message('You must provide a pose and an ID to verify both gender and age!', ephemeral=True)
-        
-        if verification_type == 'gender' and pose is None:
-            return await interaction.response.send_message('You must provide a pose to verify your gender!', ephemeral=True)
+        age_unverified_role = interaction.guild.get_role(verification_json['age_unverified_role'])
+        gender_unverified_role = interaction.guild.get_role(verification_json['gender_unverified_role'])
+
+        if verification_type == 'age' :
+            if age_unverified_role not in interaction.user.roles:
+                return await interaction.response.send_message(f"You do not have the {age_unverified_role.mention} role!", ephemeral=True)
+            if id is None:
+                return await interaction.response.send_message('You must provide a pose and an ID to verify both gender and age!', ephemeral=True)
+        else:
+            if gender_unverified_role not in interaction.user.roles:
+                return await interaction.response.send_message(f"You do not have the {gender_unverified_role.mention} role!", ephemeral=True)
+    
 
         await interaction.response.defer(ephemeral=True)
 
@@ -200,7 +245,7 @@ class Verification(commands.Cog):
 
             embed = (
                 discord.Embed(
-                    title="New Verification Request", timestamp=interaction.created_at
+                    title=f"New {'Gender' if verification_type == 'gender' else 'Age'} Verification Request", timestamp=interaction.created_at
                 )
                 .add_field(name="User", value=f"{interaction.user.mention}")
                 .set_author(
