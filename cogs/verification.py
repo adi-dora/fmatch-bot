@@ -3,10 +3,9 @@ import traceback
 
 import discord
 from discord import app_commands
-from discord.ext import commands, tasks
+from discord.ext import commands
 from discord.interactions import Interaction
 from discord.app_commands import Choice
-from discord.app_commands import AppCommandError
 from utils.verification_utils import verification_json, dump_verification_json
 
 
