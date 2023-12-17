@@ -10,7 +10,7 @@ def dump_profile_json(profile_json):
         json.dump(profile_json, f, indent=1)
 
 
-def create_profile_embed(user: discord.Member) -> discord.Embed:
+def create_profile_embed(user: discord.Member) -> (discord.Embed, str):
     user_profile = profile_json["profiles"][user.id]
     profile_embed = discord.Embed(
         title=user.global_name,
