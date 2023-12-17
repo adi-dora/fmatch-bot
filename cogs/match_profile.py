@@ -9,6 +9,7 @@ from discord.ext import commands, tasks
 from discord.interactions import Interaction
 import uuid
 from dateutil import parser
+import asyncio
 import typing
 import os
 
@@ -22,6 +23,147 @@ from discord.app_commands import Choice
 from discord.app_commands import AppCommandError
 from utils.profile_utils import *
 
+class EditProfileView(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout = 300)
+        #TODO: Add the two buttons for general or dating and send
+class GeneralProfileModal(discord.ui.Modal, title="General Profile"):
+    def __init__(self, user: discord.Member | discord.User):
+        super().__init__(timeout=600)
+        self.profile = {}
+        
+
+        self.fields = [
+            discord.ui.TextInput(
+                label="What is your name?",
+                style=discord.TextStyle.short,
+                required=True,
+                default=profile_json["profiles"][str(user.id)]["name"]
+                if user.id in profile_json["profiles"]
+                else None,
+            ),
+            discord.ui.TextInput(
+                label="Where are you from?",
+                style=discord.TextStyle.short,
+                required=True,
+                default=profile_json["profiles"][str(user.id)]["location"]
+                if user.id in profile_json["profiles"]
+                else None,
+            ),
+            
+            discord.ui.TextInput(
+                label="How tall are you?",
+                style=discord.TextStyle.short,
+                required=True,
+                default=profile_json["profiles"][str(user.id)]["height"]
+                if user.id in profile_json["profiles"]
+                else None,
+            ),
+        ]
+        for item in self.fields:
+            self.add_item(item)
+
+    async def on_submit(self, interaction: Interaction):
+        self.profile = {
+            "name": self.fields[0].value,
+            "location": self.fields[1].value,
+            "height": self.fields[2].value,
+        }
+        await interaction.response.defer()
+
+
+class DatingProfileModal(discord.ui.Modal, title="Dating Profile"):
+    def __init__(self, user: discord.Member | discord.User, profile: dict, parent_interaction: discord.Interaction):
+        super().__init__(custom_id="dating_profile_view", timeout=600)
+        self.profile = profile
+        self.interaction = parent_interaction
+        self.fields = [
+            discord.ui.TextInput(
+                label="What are you looking for?",
+                default=profile_json["profiles"][str(user.id)]["seeking"]
+                if user.id in profile_json["profiles"]
+                else None,
+                style=discord.TextStyle.short,
+                required=True,
+            ),
+            discord.ui.TextInput(
+                label="Briefly describe your dating status!",
+                style=discord.TextStyle.long,
+                required=True,
+                default=profile_json["profiles"][str(user.id)]["status"]
+                if user.id in profile_json["profiles"]
+                else None,
+            ),
+            discord.ui.TextInput(
+                label="What are your hobbies?",
+                style=discord.TextStyle.long,
+                required=True,
+                default=profile_json["profiles"][str(user.id)]["hobbies"]
+                if user.id in profile_json["profiles"]
+                else None,
+            ),
+            discord.ui.TextInput(
+                label="Please write a bio, under 200 characters",
+                required=True,
+                default=profile_json["profiles"][str(user.id)]["bio"]
+                if user.id in profile_json["profiles"]
+                else None,
+                style=discord.TextStyle.long,
+                max_length=200,
+            ),]
+        for item in self.fields:
+            self.add_item(item)
+        
+    async def on_submit(self, interaction: discord.Interaction):
+        self.profile['seeking'] = self.fields[0].value
+        self.profile['status'] = self.fields[1].value
+        self.profile['hobbies'] = self.fields[2].value
+        self.profile['bio'] = self.fields[3].value
+        await interaction.response.defer()
+
+        profile_json['profiles'][str(interaction.user.id)] = self.profile
+        dump_profile_json(profile_json)
+        await self.interaction.edit_original_response(content="Your profile has been set up sucessfully!", view = discord.ui.View())
+
+        profile_embed, gender = create_profile_embed(interaction.user)
+        profile_embed.timestamp = interaction.created_at
+
+        gender = gender.replace(" ", "_")
+        gender = gender.lower()
+        chan = interaction.guild.get_channel(profile_json[gender + "_channel"])
+        file = discord.utils.MISSING
+        if "selfie" in profile_json['profiles'][str(interaction.user.id)]:
+            file = get_selfie(interaction.user)
+
+        await chan.send(interaction.user.mention, embed=profile_embed, file=file) 
+class DatingProfileView(discord.ui.View):
+    def __init__(self, profile: dict, parent_interaction: discord.Interaction):
+        super().__init__(timeout=300)
+        self.profile = profile
+        self.interaction = parent_interaction
+
+
+    @discord.ui.button(label='Dating Profile', custom_id="dating_profile_btn")
+    async def dating_profile_btn(self, interaction: discord.Interaction, button: discord.Button):
+        dating_modal = DatingProfileModal(interaction.user, self.profile, self.interaction)
+        await interaction.response.send_modal(dating_modal)
+
+
+class GeneralProfileView(discord.ui.View):
+    def __init__(self, parent_interaction: discord.Interaction):
+        super().__init__(timeout=300)
+        self.interaction = parent_interaction
+    
+    @discord.ui.button(label='General Profile', custom_id="general_profile_btn")
+    async def general_profile_btn(self, interaction:discord.Interaction, button: discord.Button):
+        general_modal = GeneralProfileModal(interaction.user)
+        await interaction.response.send_modal(general_modal)
+        await general_modal.wait()
+        await interaction.edit_original_response(content = "Part 2: The Dating Profile", view=DatingProfileView(general_modal.profile, interaction))
+        
+
+
+        
 
 class ProfileView(discord.ui.View):
     def __init__(self, bot: commands.Bot):
@@ -34,16 +176,15 @@ class ProfileView(discord.ui.View):
     async def create_profile_btn(
         self, interaction: discord.Interaction, button: discord.Button
     ):
-        try:
-            await interaction.response.send_modal(ProfileModal(interaction.user))
-        except:
-            traceback.print_exc()
+        if str(interaction.user.id) in profile_json['profiles']:
+            return await interaction.response.send_message("You aleady have a profile!", ephemeral=True)
+        await interaction.response.send_message("Welcome! To create your profile, there are two parts you must complete. ```Part 1``` **General Questions**", ephemeral=True, view=GeneralProfileView(interaction))
 
     @discord.ui.button(label="Bump Profile", custom_id="bump_profile_btn")
     async def bump_profile_btn(
         self, interaction: discord.Interaction, button: discord.Button
     ):
-        if interaction.user.id not in profile_json["profiles"]:
+        if str(interaction.user.id) not in profile_json['profiles']:
             return await interaction.response.send_message(
                 "You do not have a profile!", ephemeral=True
             )
@@ -53,23 +194,27 @@ class ProfileView(discord.ui.View):
     async def edit_profile_btn(
         self, interaction: discord.Interaction, button: discord.Button
     ):
-        await interaction.response.send_modal(ProfileModal(interaction.user))
+        await interaction.response.send_message("Choose a part of your profile to edit", ephemeral=True, view=ProfileView(self.bot))
 
     @discord.ui.button(label="Preview Profile", custom_id="preview_profile_btn")
     async def preview_profile_btn(
         self, interaction: discord.Interaction, button: discord.Button
     ):
-        if interaction.user.id not in profile_json["profiles"]:
+        if str(interaction.user.id) not in profile_json['profiles']:
             return await interaction.response.send_message(
                 "You do not have a profile!", ephemeral=True
             )
-        # TODO: Send embed of profile to channel
+        try:
+            await interaction.response.send_message(embed=create_profile_embed(interaction.user)[0], ephemeral=True, file = get_selfie(interaction.user) if "selfie" in profile_json['profiles'][str(interaction.user.id)] else discord.utils.MISSING)
+        except:
+            traceback.print_exc()
+            
 
     @discord.ui.button(label="Upload Selfie", custom_id="selfie_btn")
     async def upload_selfie_btn(
         self, interaction: discord.Interaction, button: discord.Button
     ):
-        if interaction.user.id not in profile_json["profiles"]:
+        if str(interaction.user.id) not in profile_json['profiles']:
             return await interaction.response.send_message(
                 "You do not have a profile!", ephemeral=True
             )
@@ -87,110 +232,20 @@ class ProfileView(discord.ui.View):
 
 
         def check(msg: discord.Message):
-            return msg.channel == discord.DMChannel and len(msg.attachments) == 1 and msg.author == interaction.user
-        
-        msg = await self.bot.wait_for('message', timeout=300, check=check)
-        print(msg.channel, msg.author.name)
-
-
-
-        
-        # TODO: Somehow handle the file upload
-
-
-class ProfileModal(discord.ui.Modal, title="Create Profile"):
-    def __init__(self, user: discord.Member | discord.User):
-        super().__init__(timeout=600)
+            return type(msg.channel) == discord.channel.DMChannel and len(msg.attachments) == 1 and msg.author == interaction.user
+        try:
+            msg = await self.bot.wait_for('message', timeout=300, check=check)
+        except asyncio.TimeoutError:
+            await interaction.user.send('The request timed out! Please try again by clicking the button in the server!')
+        else:
+            selfie = msg.attachments[0]
+            await selfie.save(f"res/{interaction.user.id}.png")
+            profile_json['profiles'][str(interaction.user.id)]['selfie'] = f'./res/{interaction.user.id}.png'
+            dump_profile_json(profile_json)
+        await interaction.user.send("nice")
         
 
-        self.fields = [
-            discord.ui.TextInput(
-                label="What is your name?",
-                style=discord.TextStyle.short,
-                required=True,
-                default=profile_json["profiles"][user.id]["name"]
-                if user.id in profile_json["profiles"]
-                else None,
-            ),
-            discord.ui.TextInput(
-                label="Where are you from?",
-                style=discord.TextStyle.short,
-                required=True,
-                default=profile_json["profiles"][user.id]["location"]
-                if user.id in profile_json["profiles"]
-                else None,
-            ),
-            discord.ui.TextInput(
-                label="Briefly describe your dating status!",
-                style=discord.TextStyle.short,
-                required=True,
-                default=profile_json["profiles"][user.id]["status"]
-                if user.id in profile_json["profiles"]
-                else None,
-            ),
-            discord.ui.TextInput(
-                label="How tall are you?",
-                style=discord.TextStyle.short,
-                required=True,
-                default=profile_json["profiles"][user.id]["height"]
-                if user.id in profile_json["profiles"]
-                else None,
-            ),
-            discord.ui.TextInput(
-                label="What are you looking for?",
-                default=profile_json["profiles"][user.id]["seeking"]
-                if user.id in profile_json["profiles"]
-                else None,
-                style=discord.TextStyle.short,
-                required=True,
-            ),
-            # discord.ui.TextInput(
-            #     label="What are your hobbies?",
-            #     style=discord.TextStyle.short,
-            #     required=True,
-            #     default=profile_json["profiles"][user.id]["hobbies"]
-            #     if user.id in profile_json["profiles"]
-            #     else None,
-            # ),
-            # discord.ui.TextInput(
-            #     label="Please write a bio, under 200 characters",
-            #     required=True,
-            #     default=profile_json["profiles"][user.id]["bio"]
-            #     if user.id in profile_json["profiles"]
-            #     else None,
-            #     style=discord.TextStyle.short,
-            #     max_length=200,
-            # ),
-        ]
-        count = 0
-        for item in self.fields:
-            print(count)
-            count += 1
-            self.add_item(item)
 
-    async def on_submit(self, interaction: Interaction):
-        profile_json["profiles"][interaction.user.id] = {
-            "name": self.fields[0],
-            "location": self.fields[1],
-            "status": self.fields[2],
-            "height": self.fields[3],
-            "seeking": self.fields[4],
-            "hobbies": self.fields[5],
-            "bio": self.fields[6],
-        }
-
-        dump_profile_json(profile_json)
-
-        await interaction.response.send_message(
-            "Your profile has been updated successfully!", ephemeral=True
-        )
-
-        is_male = True  # TODO: Check gender role of user and send profile to corresponding profile channel
-
-        # profile_embed = create_profile_embed(interaction.user)
-        # profile_embed.timestamp = interaction.created_at
-
-        # TODO: Finish creating profile embed and send to channel
 
 
 class Profile(commands.Cog):
