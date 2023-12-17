@@ -27,10 +27,15 @@ def create_profile_embed(user: discord.Member) -> discord.Embed:
         if user.guild.get_role(age["role"]) in user.roles:
             user_age = age["label"]
             break
-    for gender in gate["gender"]:
-        if user.guild.get_role(gender["role"]) in user.roles:
-            user_gender = gender["label"].title()
-            break
+    if user.guild.get_role(verification['male_role']) in user.roles:
+        user_gender = "Male"
+    if user.guild.get_role(verification['female_role']) in user.roles:
+        user_gender = "Female"
+    if user.guild.get_role(verification['trans_m_role']) in user.roles:
+        user_gender = "Trans M"
+    if user.guild.get_role(verification['trans_f_role']) in user.roles:
+        user_gender = "Trans F"
+
     for orientation in profile_json["orientation_roles"]:
         if user.guild.get_role(orientation["role"]) in user.roles:
             user_orientation = orientation["label"].title()
@@ -86,4 +91,4 @@ def create_profile_embed(user: discord.Member) -> discord.Embed:
     )
 
 
-    return profile_embed
+    return profile_embed, user_gender
