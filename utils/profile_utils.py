@@ -71,7 +71,7 @@ def create_profile_embed(user: discord.Member) -> (discord.Embed, str):
     ).add_field(name="Age", value=user_age, inline=True).add_field(
         name="Gender", value=user_gender, inline=True
     ).add_field(
-        name="Orientation", value=user_orientation, inline=False
+        name="Orientation", value=user_orientation, inline=True
     ).add_field(
         name="Location", value=user_profile['location'], inline=True,
     ).add_field(
