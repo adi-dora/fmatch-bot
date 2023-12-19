@@ -102,7 +102,7 @@ class GeneralProfileModal(discord.ui.Modal, title="General Profile"):
         self.profile["location"] = self.fields[1].value
         self.profile["height"] = self.fields[2].value
         await interaction.response.defer()
-    
+
     async def on_timeout(self):
         self.timed_out = True
 
@@ -183,7 +183,7 @@ class DatingProfileModal(discord.ui.Modal, title="Dating Profile"):
                 file = get_selfie(interaction.user)
 
             await chan.send(interaction.user.mention, embed=profile_embed, file=file)
-    
+
     async def on_timeout(self):
         self.timed_out = True
 
@@ -326,9 +326,14 @@ class ProfileView(discord.ui.View):
             return await interaction.response.send_message(
                 "You do not have a profile!", ephemeral=True
             )
-        if profile_json['selfie_verification']:
-            if interaction.guild.get_role(profile_json['selfie_verified_role']) not in interaction.user.roles:
-                return await interaction.response.send_message("You must be a verified user to upload a selfie!", ephemeral=True)
+        if profile_json["selfie_verification"]:
+            if (
+                interaction.guild.get_role(profile_json["selfie_verified_role"])
+                not in interaction.user.roles
+            ):
+                return await interaction.response.send_message(
+                    "You must be a verified user to upload a selfie!", ephemeral=True
+                )
         await interaction.response.send_message(
             "Check your DMs to upload your selfie!", ephemeral=True
         )
@@ -387,23 +392,29 @@ class Profile(commands.Cog):
         m = await chan.send("Create your profile here!", view=ProfileView(self.bot))
         profile_json["profile_menu_id"] = m.id
         dump_profile_json(profile_json)
-    
+
     @app_commands.command()
     @commands.has_permissions(manage_members=True)
     async def prdelete(self, interaction: discord.Interaction, user: discord.Member):
-        if str(user.id) not in profile_json['profiles']:
-            return await interaction.response.send_message("This user does not have a profile!", ephemeral=True)
+        if str(user.id) not in profile_json["profiles"]:
+            return await interaction.response.send_message(
+                "This user does not have a profile!", ephemeral=True
+            )
 
-        del profile_json['profiles'][str(user.id)]
+        del profile_json["profiles"][str(user.id)]
         dump_profile_json(profile_json)
-        await interaction.response.send_message(f"{user.mention}'s profile has been deleted successfully.", ephemeral=True)
+        await interaction.response.send_message(
+            f"{user.mention}'s profile has been deleted successfully.", ephemeral=True
+        )
 
     @app_commands.command()
     @commands.has_permissions(administrator=True)
     async def toggleselfie(self, interaction: discord.Interaction):
-        profile_json['selfie_verification'] = not profile_json['selfie_verification']
+        profile_json["selfie_verification"] = not profile_json["selfie_verification"]
         dump_profile_json(profile_json)
-        await interaction.response.send_message(f"The requirement to be verified to upload selfies has been turned ``{'On' if profile_json['selfie_verification'] else 'Off'}``")
+        await interaction.response.send_message(
+            f"The requirement to be verified to upload selfies has been turned ``{'On' if profile_json['selfie_verification'] else 'Off'}``"
+        )
 
 
 async def setup(bot: commands.Bot):
