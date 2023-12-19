@@ -102,7 +102,7 @@ class Match(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        await self.bot.add_view()
+        await self.bot.add_view(MatchView(), message_id=match_json["match_view_id"])
 
     match = app_commands.Group(
         name="match", description="Create and manage the matchmaking functionality"
@@ -159,33 +159,13 @@ class Match(commands.Cog):
         )
 
     @match.command()
-    async def link(self, interaction: discord.Interaction, url: str | None):
-        with open("match.json", "r") as f:
-            match = json.load(f)
-
-        if url is None:
-            if match["link"] is None:
-                return await interaction.response.send_message(
-                    "There is no image/link stored"
-                )
-
-            return await interaction.response.send_message(
-                "The current image is: " + match["link"]
-            )
-
-        match["link"] = url
-
-        with open("match.json", "w") as f:
-            json.dump(match, f)
-
-        await interaction.response.send_message("The link has been set to " + url)
-
-    @match.command()
     async def create(
         self, interaction: discord.Interaction, channel: discord.TextChannel
     ):
-        with open("match.json", "r") as f:
-            match = json.load(f)
+        chan = interaction.guild.get_channel(match_json["send_match_channel"])
+        m = await chan.send("Test matchmaking", view=MatchView())
+
+        match_json["match_view_id"] = m.id
 
 
 async def setup(bot: commands.Bot):
