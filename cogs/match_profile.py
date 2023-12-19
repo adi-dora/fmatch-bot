@@ -255,6 +255,13 @@ class ProfileView(discord.ui.View):
             )
 
         cooldown = datetime.timedelta(minutes=20)
+        #TODO: Show how to set up different cooldowns for different roles
+        """
+        if {role} in interaction.user.roles:
+            cooldown = datetime.timedelta(minutes=10)
+        elif {less_premium_role} in interaction.user.roles:
+            cooldown = datetime.timedelta(minutes=15)
+        """
         last_bump = parser.parse(
             profile_json["profiles"][str(interaction.user.id)]["last_bump"]
         )
