@@ -1,7 +1,7 @@
 import json
 import random
 import traceback
-from typing import Optional
+from typing import Any, Coroutine, Optional
 from unicodedata import name
 import discord
 import datetime
@@ -27,7 +27,6 @@ from utils.profile_utils import *
 class EditProfileView(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=300)
-        # TODO: Add the two buttons for general or dating and send
 
     @discord.ui.button(label="General Profile")
     async def edit_general_profile_btn(
@@ -38,6 +37,9 @@ class EditProfileView(discord.ui.View):
         )
         await interaction.response.send_modal(general_modal)
         await general_modal.wait()
+
+        if general_modal.timed_out:
+            return
         profile_json["profiles"][str(interaction.user.id)] = general_modal.profile
         dump_profile_json(profile_json)
         await interaction.followup.send(
@@ -53,6 +55,8 @@ class EditProfileView(discord.ui.View):
         )
         await interaction.response.send_modal(dating_modal)
         await dating_modal.wait()
+        if dating_modal.timed_out:
+            return
         await interaction.followup.send(
             "Your Dating Profile has been updated successfully!", ephemeral=True
         )
@@ -62,6 +66,7 @@ class GeneralProfileModal(discord.ui.Modal, title="General Profile"):
     def __init__(self, user: discord.Member | discord.User, profile: dict | None):
         super().__init__(timeout=600)
         self.profile = profile if profile is not None else {}
+        self.timed_out = False
 
         self.fields = [
             discord.ui.TextInput(
@@ -97,6 +102,9 @@ class GeneralProfileModal(discord.ui.Modal, title="General Profile"):
         self.profile["location"] = self.fields[1].value
         self.profile["height"] = self.fields[2].value
         await interaction.response.defer()
+    
+    async def on_timeout(self):
+        self.timed_out = True
 
 
 class DatingProfileModal(discord.ui.Modal, title="Dating Profile"):
@@ -108,6 +116,7 @@ class DatingProfileModal(discord.ui.Modal, title="Dating Profile"):
     ):
         super().__init__(custom_id="dating_profile_view", timeout=600)
         self.profile = profile
+        self.timed_out = False
         self.interaction = parent_interaction
         self.fields = [
             discord.ui.TextInput(
@@ -152,6 +161,7 @@ class DatingProfileModal(discord.ui.Modal, title="Dating Profile"):
         self.profile["status"] = self.fields[1].value
         self.profile["hobbies"] = self.fields[2].value
         self.profile["bio"] = self.fields[3].value
+        self.profile["last_bump"] = str(dt.now())
         await interaction.response.defer()
 
         profile_json["profiles"][str(interaction.user.id)] = self.profile
@@ -173,6 +183,9 @@ class DatingProfileModal(discord.ui.Modal, title="Dating Profile"):
                 file = get_selfie(interaction.user)
 
             await chan.send(interaction.user.mention, embed=profile_embed, file=file)
+    
+    async def on_timeout(self):
+        self.timed_out = True
 
 
 class DatingProfileView(discord.ui.View):
@@ -200,7 +213,7 @@ class GeneralProfileView(discord.ui.View):
     async def general_profile_btn(
         self, interaction: discord.Interaction, button: discord.Button
     ):
-        general_modal = GeneralProfileModal(interaction.user)
+        general_modal = GeneralProfileModal(interaction.user, None)
         await interaction.response.send_modal(general_modal)
         await general_modal.wait()
         await interaction.edit_original_response(
@@ -240,7 +253,39 @@ class ProfileView(discord.ui.View):
             return await interaction.response.send_message(
                 "You do not have a profile!", ephemeral=True
             )
-        # TODO: Check gender and send profile to specified channel; also check cooldown
+
+        cooldown = datetime.timedelta(minutes=20)
+        last_bump = parser.parse(
+            profile_json["profiles"][str(interaction.user.id)]["last_bump"]
+        )
+
+        if dt.now() - last_bump < cooldown:
+            return await interaction.response.send_message(
+                embed=discord.Embed(
+                    title=":x: Cooldown Restriction",
+                    description=f"You can bump again at <t:{int((last_bump + cooldown).timestamp())}> (<t:{int((last_bump + cooldown).timestamp())}:R>)!",
+                    color=discord.Color.red(),
+                    timestamp=interaction.created_at,
+                ),
+                ephemeral=True,
+            )
+
+        profile_json["profiles"][str(interaction.user.id)]["last_bump"] = str(dt.now())
+
+        profile_embed, gender = create_profile_embed(interaction.user)
+        profile_embed.timestamp = interaction.created_at
+
+        gender = gender.replace(" ", "_")
+        gender = gender.lower()
+        chan = interaction.guild.get_channel(profile_json[gender + "_channel"])
+        file = discord.utils.MISSING
+        if "selfie" in profile_json["profiles"][str(interaction.user.id)]:
+            file = get_selfie(interaction.user)
+
+        await chan.send(interaction.user.mention, embed=profile_embed, file=file)
+        await interaction.response.send_message(
+            "Your profile has been bumped successfully!", ephemeral=True
+        )
 
     @discord.ui.button(label="Edit Profile", custom_id="edit_profile_btn")
     async def edit_profile_btn(
@@ -281,6 +326,9 @@ class ProfileView(discord.ui.View):
             return await interaction.response.send_message(
                 "You do not have a profile!", ephemeral=True
             )
+        if profile_json['selfie_verification']:
+            if interaction.guild.get_role(profile_json['selfie_verified_role']) not in interaction.user.roles:
+                return await interaction.response.send_message("You must be a verified user to upload a selfie!", ephemeral=True)
         await interaction.response.send_message(
             "Check your DMs to upload your selfie!", ephemeral=True
         )
@@ -339,6 +387,23 @@ class Profile(commands.Cog):
         m = await chan.send("Create your profile here!", view=ProfileView(self.bot))
         profile_json["profile_menu_id"] = m.id
         dump_profile_json(profile_json)
+    
+    @app_commands.command()
+    @commands.has_permissions(manage_members=True)
+    async def prdelete(self, interaction: discord.Interaction, user: discord.Member):
+        if str(user.id) not in profile_json['profiles']:
+            return await interaction.response.send_message("This user does not have a profile!", ephemeral=True)
+
+        del profile_json['profiles'][str(user.id)]
+        dump_profile_json(profile_json)
+        await interaction.response.send_message(f"{user.mention}'s profile has been deleted successfully.", ephemeral=True)
+
+    @app_commands.command()
+    @commands.has_permissions(administrator=True)
+    async def toggleselfie(self, interaction: discord.Interaction):
+        profile_json['selfie_verification'] = not profile_json['selfie_verification']
+        dump_profile_json(profile_json)
+        await interaction.response.send_message(f"The requirement to be verified to upload selfies has been turned ``{'On' if profile_json['selfie_verification'] else 'Off'}``")
 
 
 async def setup(bot: commands.Bot):
