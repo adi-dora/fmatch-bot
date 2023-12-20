@@ -5,4 +5,4 @@ with open("match.json", "r") as f:
 def dump_match_json(match_json):
     # your code here
     with open('match.json', 'w') as f:
-        json.dump(match_json, f)
+        json.dump(match_json, f, indent=1)
