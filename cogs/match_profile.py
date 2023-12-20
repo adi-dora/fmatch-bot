@@ -401,13 +401,12 @@ class Profile(commands.Cog):
         dump_profile_json(profile_json)
 
     @app_commands.command()
-    @commands.has_permissions(manage_members=True)
+    @commands.has_permissions(manage_guild=True)
     async def prdelete(self, interaction: discord.Interaction, user: discord.Member):
         if str(user.id) not in profile_json["profiles"]:
             return await interaction.response.send_message(
                 "This user does not have a profile!", ephemeral=True
             )
-
         del profile_json["profiles"][str(user.id)]
         dump_profile_json(profile_json)
         await interaction.response.send_message(
