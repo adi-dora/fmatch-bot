@@ -378,10 +378,10 @@ class Match(commands.Cog):
 
     @app_commands.command()
     async def creatematch(
-        self, interaction: discord.Interaction, channel: discord.TextChannel
+        self, interaction: discord.Interaction
     ):
         chan = interaction.guild.get_channel(match_json["send_match_channel"])
-        m = await chan.send("Test matchmaking", view=MatchView())
+        m = await chan.send(match_json['message'], view=MatchView())
 
         match_json["match_view_id"] = m.id
 
@@ -429,7 +429,7 @@ class Match(commands.Cog):
                     )
                     file = discord.utils.MISSING
                     if "selfie" in profile_json["profiles"][str(matched_user.id)]:
-                        file = get_selfie(matched_user.id)
+                        file = get_selfie(matched_user)
                     await user.send(
                         embed=create_profile_embed(matched_user)[0],
                         view=DecideMatchView(user, matched_user),
@@ -449,7 +449,7 @@ class Match(commands.Cog):
 
                     file = discord.utils.MISSING
                     if "selfie" in profile_json["profiles"][str(user.id)]:
-                        file = get_selfie(user.id)
+                        file = get_selfie(user)
                     await matched_user.send(
                         embed=create_profile_embed(user)[0],
                         view=DecideMatchView(matched_user, user),
