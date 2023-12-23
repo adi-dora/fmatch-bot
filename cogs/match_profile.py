@@ -186,6 +186,9 @@ class DatingProfileModal(discord.ui.Modal, title="Dating Profile"):
 
     async def on_timeout(self):
         self.timed_out = True
+    
+    async def on_error(self, interaction: Interaction, error: Exception) -> None:
+        traceback.print_exc()
 
 
 class DatingProfileView(discord.ui.View):

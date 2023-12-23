@@ -17,7 +17,6 @@ class DecideMatchView(discord.ui.View):
     users = {}
     matches = []
 
-
     def __init__(self, current_user: discord.Member, matched_user: discord.Member):
         super().__init__(timeout=600)
         self.matched_user = matched_user
@@ -28,7 +27,7 @@ class DecideMatchView(discord.ui.View):
     async def accept_match_btn(
         self, interaction: discord.Interaction, button: discord.Button
     ):
-        self.stop()
+        await interaction.message.edit(view=discord.ui.View())
         DecideMatchView.matches.append(interaction.user.id)
         await self.matched_user.send(
             embed=discord.Embed(
@@ -93,8 +92,6 @@ class DecideMatchView(discord.ui.View):
 
             await interaction.message.edit(view=discord.ui.View())
 
-            
-
             if (
                 self.current_user.guild.get_role(verification_json["male_role"])
                 in self.current_user.roles
@@ -143,17 +140,26 @@ class DecideMatchView(discord.ui.View):
 
             match_json["general_queue"].append(str(self.matched_user.id))
             dump_match_json(match_json)
-            await interaction.response.send_message("You have rejected the match! You have been re-added to the queue successfully!")
-            await self.matched_user.send("Your partner has rejected the match! You have been re-added to the queue successfully!")
+            await interaction.response.send_message(
+                "You have rejected the match! You have been re-added to the queue successfully!"
+            )
+            await self.matched_user.send(
+                "Your partner has rejected the match! You have been re-added to the queue successfully!"
+            )
         except:
             traceback.print_exc()
 
     async def on_timeout(self) -> None:
+        if (
+            str(self.current_user.id) in match_json["general_queue"]
+            and str(self.matched_user.id) in match_json["general_queue"]
+        ):
+            return
         if self.current_user.id in DecideMatchView.users:
             del DecideMatchView.users[self.current_user.id]
         if self.matched_user.id in DecideMatchView.users:
             del DecideMatchView.users[self.matched_user.id]
-        
+
         if self.current_user.id in DecideMatchView.matches:
             DecideMatchView.matches.remove(self.current_user.id)
         if self.matched_user.id in DecideMatchView.matches:
@@ -208,8 +214,12 @@ class DecideMatchView(discord.ui.View):
         match_json["general_queue"].append(str(self.matched_user.id))
 
         dump_match_json(match_json)
-        await self.current_user.send("You or your match did not respond in time! You have been re-added to the queue!")
-        await self.matched_user.send("You or your match did not respond in time! You have been re-added to the queue!")
+        await self.current_user.send(
+            "You or your match did not respond in time! You have been re-added to the queue!"
+        )
+        await self.matched_user.send(
+            "You or your match did not respond in time! You have been re-added to the queue!"
+        )
 
 
 class MatchView(discord.ui.View):
@@ -227,11 +237,12 @@ class MatchView(discord.ui.View):
                 return await interaction.response.send_message(
                     "You do not have a profile! Please create one before you can enter the queue!",
                     ephemeral=True,
+                    delete_after=300,
                 )
 
             if str(interaction.user.id) in match_json["general_queue"]:
                 return await interaction.response.send_message(
-                    "You are already in the queue!", ephemeral=True
+                    "You are already in the queue!", ephemeral=True, delete_after=300
                 )
 
             if (
@@ -266,6 +277,7 @@ class MatchView(discord.ui.View):
             await interaction.response.send_message(
                 "You have been added to the matchmaking queue successfully!",
                 ephemeral=True,
+                delete_after=300,
             )
         except:
             traceback.print_exc()
@@ -281,7 +293,7 @@ class MatchView(discord.ui.View):
 
         except ValueError:
             return await interaction.response.send_message(
-                "You are not currently in the queue!", ephemeral=True
+                "You are not currently in the queue!", ephemeral=True, delete_after=300
             )
 
         if (
@@ -313,7 +325,9 @@ class MatchView(discord.ui.View):
             reason="User left machmaking queue",
         )
         await interaction.response.send_message(
-            "You have been removed from the queue successfully!", ephemeral=True
+            "You have been removed from the queue successfully!",
+            ephemeral=True,
+            delete_after=300,
         )
 
 
@@ -377,11 +391,9 @@ class Match(commands.Cog):
         )
 
     @app_commands.command()
-    async def creatematch(
-        self, interaction: discord.Interaction
-    ):
+    async def creatematch(self, interaction: discord.Interaction):
         chan = interaction.guild.get_channel(match_json["send_match_channel"])
-        m = await chan.send(match_json['message'], view=MatchView())
+        m = await chan.send(match_json["message"], view=MatchView())
 
         match_json["match_view_id"] = m.id
 
@@ -393,7 +405,7 @@ class Match(commands.Cog):
             guild = self.bot.get_guild(match_json["server_id"])
             general_queue = match_json["general_queue"].copy()
             for user in general_queue:
-                if user not in match_json['general_queue']:
+                if user not in match_json["general_queue"]:
                     continue
                 user = guild.get_member(int(user))
                 if (
@@ -401,21 +413,21 @@ class Match(commands.Cog):
                     or guild.get_role(verification_json["trans_m_role"]) in user.roles
                 ):
                     if guild.get_role(match_json["male_pref_role"]) in user.roles:
-                        matched_user = self.get_match(guild, "m_pref_m")
-                        user_pref = 'm_pref_m'
+                        matched_user = self.get_match(guild, user, "m_pref_m")
+                        user_pref = "m_pref_m"
                     else:
-                        matched_user = self.get_match(guild, "f_pref_m")
-                        user_pref = 'm_pref_f'
+                        matched_user = self.get_match(guild, user, "f_pref_m")
+                        user_pref = "m_pref_f"
                 else:
                     if guild.get_role(match_json["male_pref_role"]) in user.roles:
-                        matched_user = self.get_match(guild, "m_pref_f")
-                        user_pref = 'f_pref_m'
+                        matched_user = self.get_match(guild, user, "m_pref_f")
+                        user_pref = "f_pref_m"
                     else:
-                        matched_user = self.get_match(guild, "f_pref_f")
-                        user_pref = 'f_pref_f'
+                        matched_user = self.get_match(guild, user, "f_pref_f")
+                        user_pref = "f_pref_f"
 
                 if matched_user is not None:
-                    match_json['general_queue'].remove(str(user.id))
+                    match_json["general_queue"].remove(str(user.id))
                     match_json[user_pref + "_queue"].remove(str(user.id))
                     await user.send(
                         embed=discord.Embed(
@@ -433,7 +445,7 @@ class Match(commands.Cog):
                     await user.send(
                         embed=create_profile_embed(matched_user)[0],
                         view=DecideMatchView(user, matched_user),
-                        file= file
+                        file=file,
                     )
 
                     await matched_user.send(
@@ -453,15 +465,19 @@ class Match(commands.Cog):
                     await matched_user.send(
                         embed=create_profile_embed(user)[0],
                         view=DecideMatchView(matched_user, user),
-                        file=file
+                        file=file,
                     )
                     dump_match_json(match_json)
         except:
             traceback.print_exc()
 
-    def get_match(self, guild: discord.Guild, pref: str) -> discord.Member | None:
+    def get_match(
+        self, guild: discord.Guild, current_user: discord.Member, pref: str
+    ) -> discord.Member | None:
         for user in match_json[pref + "_queue"]:
             user = guild.get_member(int(user))
+            if user == current_user:
+                continue
             if user.status != discord.Status.offline:
                 match_json["general_queue"].remove(str(user.id))
                 match_json[pref + "_queue"].remove(str(user.id))
