@@ -41,6 +41,27 @@ class Utilities(commands.Cog):
             .set_thumbnail(url=user.avatar.url)
         )
 
+    @app_commands.command(
+        name="avatar", description="Get the avatar of a user in the server!"
+    )
+    async def avatar(
+        self, interaction: discord.Interaction, user: discord.Member | None
+    ):
+        if user is None:
+            user = interaction.user
+        await interaction.response.send_message(
+            embed=discord.Embed(
+                color=discord.Color.pink(),
+                timestamp=interaction.created_at,
+                description=user.mention,
+            )
+            .set_image(url=user.avatar.url)
+            .set_footer(text=f"ID: {user.id}")
+            .set_author(name=user.name, icon_url=user.avatar.url)
+        )
+    
+    
+
 
 async def setup(bot):
     await bot.add_cog(Utilities(bot))
