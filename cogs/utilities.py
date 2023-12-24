@@ -55,7 +55,11 @@ class Utilities(commands.Cog):
                 timestamp=interaction.created_at,
                 description=user.mention,
             )
-            .set_image(url=user.guild_avatar.url if user.guild_avatar is not None else user.display_avatar.url)
+            .set_image(
+                url=user.guild_avatar.url
+                if user.guild_avatar is not None
+                else user.display_avatar.url
+            )
             .set_footer(text=f"ID: {user.id}")
             .set_author(name=user.name, icon_url=user.avatar.url)
         )
@@ -64,13 +68,43 @@ class Utilities(commands.Cog):
         description="Get statistics about the current members of the server!"
     )
     async def membercount(self, interaction: discord.Interaction):
+        online = 0
+        idle = 0
+        dnd = 0
+        offline = 0
+        bots = 0
+        total_count = 0
+        async for member in await interaction.guild.fetch_members():
+            if member.bot:
+                bots += 1
+
+            elif member.status == discord.Status.online:
+                online += 1
+            elif member.status == discord.Status.idle:
+                idle += 1
+            elif member.status == discord.Status.dnd:
+                dnd += 1
+            else:
+                offline += 1
+            total_count += 1
+
         await interaction.response.send_message(
             embed=discord.Embed(
-                title="Total Member Count",
-                description=interaction.guild.member_count,
+                description=f":green_circle: : {online}  :yellow_circle: : {idle}  :red_circle: : {dnd}",
                 color=discord.Color.pink(),
                 timestamp=interaction.created_at,
-            ).set_thumbnail(url=interaction.guild.icon.url).set_footer(text=f"Server ID: {interaction.guild.id}")
+            )
+            .add_field(name="Total Member Count", value=total_count)
+            .add_field(
+                name="Members (without bots)",
+                value=total_count - bots,
+                inline=False,
+            )
+            .add_field(name="Bots", value=bots)
+            .add_field(name="Online", value=online + idle + dnd, inline=False)
+            .add_field(name="Offline", value=offline)
+            .set_thumbnail(url=interaction.guild.icon.url)
+            .set_footer(text=f"Server ID: {interaction.guild.id}")
         )
 
 
