@@ -58,16 +58,16 @@ class RoleMenu(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        with open("rolemenu.json", "r") as f:
-            menu = json.load(f)
-
         try:
+            with open("rolemenu.json", "r") as f:
+                menu = json.load(f)
+
             for role_menu in menu["menus"]:
                 self.bot.add_view(
                     RoleMenuView(role_menu), message_id=role_menu["message_id"]
                 )
         except:
-            pass
+            traceback.print_exc()
 
     menu = app_commands.Group(
         name="rolemenu", description="Create and manage role menus"
