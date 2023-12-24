@@ -55,12 +55,23 @@ class Utilities(commands.Cog):
                 timestamp=interaction.created_at,
                 description=user.mention,
             )
-            .set_image(url=user.avatar.url)
+            .set_image(url=user.guild_avatar.url if user.guild_avatar is not None else user.display_avatar.url)
             .set_footer(text=f"ID: {user.id}")
             .set_author(name=user.name, icon_url=user.avatar.url)
         )
-    
-    
+
+    @app_commands.command(
+        description="Get statistics about the current members of the server!"
+    )
+    async def membercount(self, interaction: discord.Interaction):
+        await interaction.response.send_message(
+            embed=discord.Embed(
+                title="Total Member Count",
+                description=interaction.guild.member_count,
+                color=discord.Color.pink(),
+                timestamp=interaction.created_at,
+            ).set_thumbnail(url=interaction.guild.icon.url).set_footer(text=f"Server ID: {interaction.guild.id}")
+        )
 
 
 async def setup(bot):
