@@ -37,8 +37,8 @@ class RoleMenuSelect(discord.ui.Select):
         ]
         roles_selected = [interaction.guild.get_role(val) for val in self.values]
 
-        await interaction.user.remove_roles(*menu_roles)
-        await interaction.user.add_roles(*roles_selected)
+        await interaction.user.remove_roles(*menu_roles, reason="User updated rolemenu roles")
+        await interaction.user.add_roles(*roles_selected, reason="User updated rolemenu roles")
 
         await interaction.response.send_message(
             "You have been given the selected roles successfully!", ephemeral=True
