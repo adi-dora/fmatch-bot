@@ -1,14 +1,8 @@
 import json
-import traceback
-
 import discord
 from discord import app_commands
 from discord.ext import commands
-import datetime
-import dateutil
 from dateutil import parser
-from datetime import datetime as dt
-from utils.verification_utils import verification_json, dump_verification_json
 
 
 class Utilities(commands.Cog):
