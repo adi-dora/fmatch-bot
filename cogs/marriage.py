@@ -219,12 +219,12 @@ class Marriage(commands.Cog):
         )
 
     @app_commands.command(description="View your current spouse!")
-    async def spouse(self, interaction: Interaction, member: discord.Member | None):
+    async def spouse(self, interaction: Interaction):
         with open("marriage.json", "r") as f:
             marriage = json.load(f)
 
         try:
-            spouse = marriage[str(interaction.user.id)]["spouse"]["user"]
+            spouse = marriage[str(interaction.user.id)]["spouse"]
 
         except KeyError:
             marriage[str(interaction.user.id)] = {
@@ -243,7 +243,7 @@ class Marriage(commands.Cog):
                 f"You are not married.", ephemeral=True
             )
 
-        spouse = interaction.guild.get_member(spouse)
+        spouse = interaction.guild.get_member(spouse['user'])
         if spouse is None:
             return await interaction.response.send_message(
                 f"Your partner was not found!", ephemeral=True
@@ -455,8 +455,11 @@ class Marriage(commands.Cog):
                 json.dump(marriage, f, indent=1)
 
             return await interaction.response.send_message(
-                f"You are not married.", ephemeral=True
+                f"You are not married!", ephemeral=True
             )
+        
+        if spouse is None:
+            return await interaction.response.send_message("You are not married!", ephemeral=True)
 
         spouse = interaction.guild.get_member(spouse["user"])
 
