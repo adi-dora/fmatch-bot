@@ -4,8 +4,10 @@ import traceback
 import discord
 from discord import app_commands
 from discord.ext import commands
-from discord.interactions import Interaction
-from discord.app_commands import Choice
+import datetime
+import dateutil
+from dateutil import parser
+from datetime import datetime as dt
 from utils.verification_utils import verification_json, dump_verification_json
 
 
@@ -78,7 +80,7 @@ class Utilities(commands.Cog):
             await interaction.response.defer()
             async for member in interaction.guild.fetch_members():
                 member = interaction.guild.get_member(member.id)
-                
+
                 if member.bot:
                     bots += 1
 
@@ -112,6 +114,41 @@ class Utilities(commands.Cog):
             )
         except:
             traceback.print_exc()
+
+    @app_commands.command(description="Set an AFK Status!")
+    async def afk(self, interaction: discord.Interaction, status: str = ""):
+        with open("utilities.json", "r") as f:
+            util = json.load(f)
+
+        util["afk_status"][str(interaction.user.id)] = {
+            "status": status,
+            "afk_since": str(interaction.created_at),
+        }
+        with open("utilities.json", "w") as f:
+            json.dump(util, f, indent=1)
+
+        await interaction.response.send_message(
+            "Your AFK status has been set successfully."
+        )
+
+    @commands.Cog.listener()
+    async def on_message(self, message: discord.Message):
+        with open("utilities.json", "r") as f:
+            util = json.load(f)
+        if message.guild is None or len(message.mentions) == 0:
+            return
+
+        if str(message.author.id) in util["afk_status"]:
+            del util["afk_status"][str(message.author.id)]
+            await message.reply(f"{message.author.mention} is no longer AFK!")
+            with open("utilities.json", "w") as f:
+                json.dump(util, f, indent=1)
+
+        for mention in message.mentions:
+            if str(mention.id) in util["afk_status"]:
+                await message.reply(
+                    f'{mention.mention} is currently AFK! Status: ``{util["afk_status"][str(mention.id)]["status"] if util["afk_status"][str(mention.id)]["status"] != "" else "None"}`` They have been AFK since <t:{int(parser.parse(util["afk_status"][str(mention.id)]["afk_since"]).timestamp())}:R>'
+                )
 
 
 async def setup(bot):
