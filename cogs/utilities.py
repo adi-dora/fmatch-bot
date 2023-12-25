@@ -70,50 +70,47 @@ class Utilities(commands.Cog):
         description="Get statistics about the current members of the server!"
     )
     async def membercount(self, interaction: discord.Interaction):
-        try:
-            online = 0
-            idle = 0
-            dnd = 0
-            offline = 0
-            bots = 0
-            total_count = 0
-            await interaction.response.defer()
-            async for member in interaction.guild.fetch_members():
-                member = interaction.guild.get_member(member.id)
+        online = 0
+        idle = 0
+        dnd = 0
+        offline = 0
+        bots = 0
+        total_count = 0
+        await interaction.response.defer()
+        async for member in interaction.guild.fetch_members():
+            member = interaction.guild.get_member(member.id)
 
-                if member.bot:
-                    bots += 1
+            if member.bot:
+                bots += 1
 
-                elif member.status == discord.Status.online:
-                    online += 1
-                elif member.status == discord.Status.idle:
-                    idle += 1
-                elif member.status == discord.Status.dnd:
-                    dnd += 1
-                else:
-                    offline += 1
-                total_count += 1
+            elif member.status == discord.Status.online:
+                online += 1
+            elif member.status == discord.Status.idle:
+                idle += 1
+            elif member.status == discord.Status.dnd:
+                dnd += 1
+            else:
+                offline += 1
+            total_count += 1
 
-            await interaction.followup.send(
-                embed=discord.Embed(
-                    description=f":green_circle: : {online} \n :yellow_circle: : {idle} \n :red_circle: : {dnd}",
-                    color=discord.Color.pink(),
-                    timestamp=interaction.created_at,
-                )
-                .add_field(name="Total Member Count", value=total_count)
-                .add_field(
-                    name="Members (without bots)",
-                    value=total_count - bots,
-                    inline=False,
-                )
-                .add_field(name="Bots", value=bots)
-                .add_field(name="Online", value=online + idle + dnd, inline=True)
-                .add_field(name="Offline", value=offline)
-                .set_thumbnail(url=interaction.guild.icon.url)
-                .set_footer(text=f"Server ID: {interaction.guild.id}")
+        await interaction.followup.send(
+            embed=discord.Embed(
+                description=f":green_circle: : {online} \n :yellow_circle: : {idle} \n :red_circle: : {dnd}",
+                color=discord.Color.pink(),
+                timestamp=interaction.created_at,
             )
-        except:
-            traceback.print_exc()
+            .add_field(name="Total Member Count", value=total_count)
+            .add_field(
+                name="Members (without bots)",
+                value=total_count - bots,
+                inline=False,
+            )
+            .add_field(name="Bots", value=bots)
+            .add_field(name="Online", value=online + idle + dnd, inline=True)
+            .add_field(name="Offline", value=offline)
+            .set_thumbnail(url=interaction.guild.icon.url)
+            .set_footer(text=f"Server ID: {interaction.guild.id}")
+        )
 
     @app_commands.command(description="Set an AFK Status!")
     async def afk(self, interaction: discord.Interaction, status: str = ""):
