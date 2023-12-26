@@ -64,15 +64,15 @@ class Levels(commands.Cog):
 
         dump_level_json(level_json)
 
-    @commands.command()
+    @app_commands.command()
     async def rank(
         self,
-        ctx: discord.Interaction,
+        interaction: discord.Interaction,
         user: discord.Member | discord.User | None,
     ):
         try:
             if user is None:
-                user = ctx.author
+                user = interaction.user
 
             if str(user.id) not in level_json:
                 level = 1
@@ -253,38 +253,37 @@ class Levels(commands.Cog):
 
             background.save(f"./cards/card_{x}.png", "PNG")
 
-            await ctx.send(file=discord.File(f"./cards/card_{x}.png"))
+            await interaction.response.send_message(
+                file=discord.File(f"./cards/card_{x}.png")
+            )
 
             os.remove(f"./cards/card_{x}.png")
         except:
             traceback.print_exc()
 
-    @commands.command()
+    @app_commands.command(
+        description="View the top 10 users with the highest EXP in the server!"
+    )
     async def leaderboard(self, interaction: discord.Interaction):
-        try:
-            x = sorted(
-                level_json.items(), key=lambda k: k[1]["experience"], reverse=True
-            )
-            if len(x) > 10:
-                x = x[:10]
+        x = sorted(level_json.items(), key=lambda k: k[1]["experience"], reverse=True)
+        if len(x) > 10:
+            x = x[:10]
 
-            x = dict(x)
+        x = dict(x)
 
-            embed = discord.Embed(
-                title="Current Leaderboard",
-                timestamp=interaction.message.created_at,
-                color=discord.Color.pink(),
-            )
-            embed.description = "\n".join(
-                f"{num}. "
-                + interaction.guild.get_member(int(user)).mention
-                + f' ({x[user]["experience"]} EXP)'
-                for num, user in enumerate(x.keys())
-            )
+        embed = discord.Embed(
+            title="Current Leaderboard",
+            timestamp=interaction.created_at,
+            color=discord.Color.pink(),
+        )
+        embed.description = "\n".join(
+            f"{num}. "
+            + interaction.guild.get_member(int(user)).mention
+            + f' ({x[user]["experience"]} EXP)'
+            for num, user in enumerate(x.keys())
+        )
 
-            await interaction.send(embed=embed)
-        except:
-            traceback.print_exc()
+        await interaction.response.send_message(embed=embed)
 
 
 async def setup(bot: commands.Bot):
