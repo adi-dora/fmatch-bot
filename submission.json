@@ -1,10 +1,24 @@
 {
-  "suggestion_message": "",
-  "suggestion_channel": null,
-  "help_role_required": null,
-  "help_channel": null,
-  "help_message": "",
-  "confession_channel": null,
-  "confession_message": "",
-  "confession_reply_channel": null
+ "suggestion_message": "totall",
+ "server_id": 647209569285701642,
+ "suggestion_id": 1187988665364922389,
+ "suggestion_channel": 794680791710826496,
+ "send_suggestion_channel": 1173760941477855385,
+ "help_role_required": 698010181031690320,
+ "help_channel": 794680791710826496,
+ "applicants": {},
+ "admin_role": 722816524183797800,
+ "mod_role": 735998154347905177,
+ "confessions": [
+  1175180325085790330,
+  1187988572796620821
+ ],
+ "help_message": "Want to apply for staff? Now's your chance!",
+ "help_send_channel": 1173760941477855385,
+ "help_id": 1187988790791376997,
+ "confession_channel": 794680791710826496,
+ "confession_send_channel": 1173760941477855385,
+ "confession_message": "wdwdw",
+ "confession_reply_channel": 794680783297970206,
+ "confession_id": 1187988537698697288
 }

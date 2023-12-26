@@ -1,1 +1,64 @@
-{"menus": []}
+{
+  "menus": [
+    {
+      "message": null,
+      "file_path": "./res/281940778970775563.png",
+      "message_id": null,
+      "placeholder": "What is your favorite letter?",
+      "channel": 794680791710826496,
+      "max_roles_selectable": 3,
+      "roles": [
+        {
+          "label": "A",
+          "emoji": "<:aACpfp:746452464521445578>",
+          "role": 737030359593517056
+        },
+        {
+          "label": "B",
+          "emoji": "<:Verdant:739318800029319269>",
+          "role": 735998154347905177
+        },
+        {
+          "label": "C",
+          "emoji": "<:Confirm:736236531907559508>",
+          "role": 724741663347572756
+        },
+        {
+          "label": "D",
+          "emoji": "<:Decline:736236532028932146>",
+          "role": 737733981692493824
+        }
+      ]
+    },
+    {
+        "message": "Word yo",
+        "file_path": "./res/512398565994266626.png",
+        "message_id": null,
+        "placeholder": "What is your favorite letter?",
+        "channel": 794680791710826496,
+        "max_roles_selectable": 1,
+        "roles": [
+          {
+            "label": "E",
+            "emoji": "<:aACpfp:746452464521445578>",
+            "role": 737030359593517056
+          },
+          {
+            "label": "F",
+            "emoji": "<:Verdant:739318800029319269>",
+            "role": 735998154347905177
+          },
+          {
+            "label": "G",
+            "emoji": "<:Confirm:736236531907559508>",
+            "role": 724741663347572756
+          },
+          {
+            "label": "H",
+            "emoji": "<:Decline:736236532028932146>",
+            "role": 737733981692493824
+          }
+        ]
+      }
+  ]
+}

@@ -1,6 +1,40 @@
 {
  "giveaways": [
   {
+   "id": "238fea34-ea0a-40bc-9aac-3f023a4a3328",
+   "prize": "nothing",
+   "num_winners": 1,
+   "time": "2023-12-23 00:16:13.025591",
+   "host": 512398565994266626,
+   "participants": [],
+   "channel": 794680791710826496,
+   "role": null,
+   "message": 1187986509933072464,
+   "ongoing": false,
+   "winners": [
+    512398565994266626
+   ],
+   "required_role": null
+  },
+  {
+   "id": "412612ba-eb57-4cf3-8953-91b643c7289e",
+   "prize": "18$",
+   "num_winners": 1,
+   "time": "2023-11-08 16:07:32.119784",
+   "host": 512398565994266626,
+   "participants": [
+    1120097106288459867
+   ],
+   "channel": 794680791710826496,
+   "role": 723710905371721863,
+   "message": 1171919035928150108,
+   "ongoing": false,
+   "winners": [
+    512398565994266626
+   ],
+   "required_role": null
+  },
+  {
    "id": "9a7c9e50-eef2-4348-ae89-76136b784189",
    "prize": "2 to",
    "num_winners": 1,

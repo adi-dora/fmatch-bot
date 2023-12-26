@@ -1,1 +1,64 @@
-{"male": null, "female": null, "profiles": {}}
+{
+ "male_channel": 1083209373637148713,
+ "female_channel": 1083209362681638939,
+ "trans_f_channel": 1164663306137641072,
+ "trans_m_channel": 794680791710826496,
+ "send_profile_channel": 1081002119294894160,
+ "selfie_verified_role": null,
+ "dm_status_roles": [],
+ "orientation_roles": [],
+ "selfie_verification": false,
+ "profiles": {
+  "281940778970775563": {
+   "name": "A",
+   "location": "B",
+   "height": "C",
+   "seeking": "D",
+   "status": "E",
+   "hobbies": "F",
+   "bio": "G",
+   "last_bump": "2023-12-21 21:29:54.438279"
+  },
+  "567378295176560642": {
+   "name": "t",
+   "location": "t",
+   "height": "t",
+   "seeking": "r",
+   "status": "r",
+   "hobbies": "r",
+   "bio": "re",
+   "last_bump": "2023-12-21 21:30:20.063368"
+  },
+  "847260903284277278": {
+   "name": "flfl",
+   "location": "rhjgojf",
+   "height": "foifjoe",
+   "seeking": "fiefneki",
+   "status": "grgnvrijg",
+   "hobbies": "girkgjrij",
+   "bio": "girjirj",
+   "last_bump": "2023-12-21 21:30:47.789410"
+  },
+  "512398565994266626": {
+   "name": "Alton",
+   "location": "Mars",
+   "height": "10'",
+   "seeking": "A",
+   "status": "B",
+   "hobbies": "D",
+   "bio": "C",
+   "last_bump": "2023-12-21 21:32:30.767784"
+  },
+  "1120097106288459867": {
+   "name": "Impulse",
+   "location": "Venus",
+   "height": "1'",
+   "seeking": "Z",
+   "status": "Y",
+   "hobbies": "X",
+   "bio": "W",
+   "last_bump": "2023-12-21 21:33:06.739662"
+  }
+ },
+ "profile_menu_id": 1187565396660863097
+}

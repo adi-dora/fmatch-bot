@@ -1,24 +1,41 @@
 {
- "channel": 794680791710826496,
+ "channel": 794680783297970206,
+ "msg_id": 1187985925607792660,
+ "roles_after_verification": [],
  "rules": "1. No cursing 2. etc. **etc.**",
  "link": "https://media.discordapp.net/attachments/794680791710826496/1135635402213040179/city.jpg?width=829&height=466",
  "age": [
   {
    "label": 18,
    "emoji": "<:aACpfp:746452464521445578>",
-   "role": 722816524183797800
+   "role": 737030359593517056
   },
   {
    "label": 19,
-   "emoji": "\ud83d\udc94",
-   "role": 684210268678389799
+   "emoji": "<:Verdant:739318800029319269>",
+   "role": 735998154347905177
+  },
+  {
+   "label": 20,
+   "emoji": "<:Verdant:739318800029319269>",
+   "role": 724741663347572756
+  },
+  {
+   "label": 21,
+   "emoji": "<:Verdant:739318800029319269>",
+   "role": 737733981692493824
   }
  ],
  "gender": [
   {
-   "label": "Male",
-   "emoji": "<:Confirm:736236531907559508>",
-   "role": 723710905371721863
+   "label": "male",
+   "emoji": "\ud83d\udc68",
+   "role": 698010181031690320
+  },
+  {
+   "label": "female",
+   "emoji": "\u2640\ufe0f",
+   "role": 736400586215522406
   }
  ]
 }

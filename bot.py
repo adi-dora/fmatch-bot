@@ -64,15 +64,16 @@ async def load_extensions():
     for filename in os.listdir("./cogs"):
         if filename.endswith(".py"):
             await client.load_extension(f"cogs.{filename[:-3]}")
-    await client.start(
+    await client.start(os.getenv('BOT_TOKEN')
     )
 
 
 @client.command(name="sync")
 async def sync_slash_commands(ctx):
     try:
-        await client.tree.sync()
+        x = await client.tree.sync()
         await ctx.message.add_reaction("✅")
+        # print(x)
     except:
         traceback.print_exc()
 

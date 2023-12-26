@@ -1,1 +1,35 @@
-{"verifications": {"1167723586010755162": {"user": 512398565994266626}}, "verification_channel": 794680791710826496, "female_gender_verified_role": null, "male_gender_verified_role": null, "talking_role": null, "18_verified_role": 698010181031690320, "staff_roles": [684210268678389799, 723710905371721863]}
+{
+ "male_role": 1078197576584663060, 
+ "female_role": 1078197555197906965,
+ "trans_m_role": 1078197839303286814,
+ "trans_f_role": 1078197591570907248,
+ "gender_unverified_role": 1078163325210341376,
+ "age_unverified_role": 1078193152743178340,
+ "verifications": {
+  "1167723586010755162": {
+   "user": 512398565994266626
+  },
+  "1177383734421487648": {
+   "user": 512398565994266626
+  },
+  "1177384042778337370": {
+   "user": 512398565994266626
+  },
+  "1177384660691599420": {
+   "user": 512398565994266626
+  },
+  "1177387672097001512": {
+   "user": 512398565994266626
+  }
+ },
+ "verification_channel": 794680791710826496,
+ "female_gender_verified_role": 1078192789109620777,
+ "male_gender_verified_role": 1078192715214360587,
+ "m_to_f_verified_role": 1078192965270380604,
+ "f_to_m_verified_role": 1078192865181704203,
+ "talking_role": 1078192348179222619,
+ "18_verified_role": 1078193073374371910,
+ "staff_roles": [
+    1078125653188149352
+ ]
+}

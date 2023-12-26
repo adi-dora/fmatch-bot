@@ -1,1 +1,23 @@
-{"message": null, "link": null, "channel": null}
+{
+ "message": "<a:B_SakuraFlower:1083204292602773645> **__Want to Find a date faster?__**\nEnter matchmaking queue to get matched on speed dates with other singles! Once we've found a match you'll be notified in DM and if both of you approves, it's a date!\n<a:B_SakuraFlower:1083204292602773645> **__Some useful information__**\n<a:whte_serinityecekrainbow:1083579247727214713>  You must complete your <#1081002119294894160> to enter the queue!\n<a:whte_serinityecekrainbow:1083579247727214713>  You must have a completed profile in <#1081002352070381639> to be matched!\n<a:whte_serinityecekrainbow:1083579247727214713>  You won't get matched while you're offline!\n<a:whte_serinityecekrainbow:1083579247727214713>  You can only get matched once every hour!\n<a:whte_serinityecekrainbow:1083579247727214713>  Bot will match you based on your preferences roles!\n<a:B_SakuraFlower:1083204292602773645> **Press the buttons below to enter/leave matchmaking queue!**",
+ "male_pref_role": 1078202111579406446,
+ "female_pref_role": 1078202156823367760,
+ "matchmaking_role": 1080998447542456340,
+ "matchmaking_category": 1083573284202893352,
+ "server_id": 1077798996417974362,
+ "general_queue": [
+  "847260903284277278",
+  "281940778970775563",
+  "567378295176560642"
+ ],
+ "m_pref_m_queue": [],
+ "f_pref_m_queue": [],
+ "m_pref_f_queue": [],
+ "f_pref_f_queue": [
+  "847260903284277278",
+  "281940778970775563",
+  "567378295176560642"
+ ],
+ "send_match_channel": 1081001755258667028,
+ "match_view_id": 1187562217579745331
+}
