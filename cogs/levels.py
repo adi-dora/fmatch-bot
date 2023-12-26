@@ -54,7 +54,7 @@ class Levels(commands.Cog):
                     f'{message.author.mention} has leveled up! They are now level {level_json[str(message.author.id)]["level"]}'
                 )
 
-    @tasks.loop(seconds=10)
+    @tasks.loop(seconds=30)
     async def sort_and_push_lb(self):
         x = dict(
             sorted(level_json.items(), key=lambda k: k[1]["experience"], reverse=True)
@@ -70,196 +70,193 @@ class Levels(commands.Cog):
         interaction: discord.Interaction,
         user: discord.Member | discord.User | None,
     ):
-        try:
-            if user is None:
-                user = interaction.user
+        if user is None:
+            user = interaction.user
 
-            if str(user.id) not in level_json:
-                level = 1
+        if str(user.id) not in level_json:
+            level = 1
 
-                experience = 0
+            experience = 0
 
-                position = len(level_json) + 1
+            position = len(level_json) + 1
 
-                percentage = 0
+            percentage = 0
 
-                next_level = 8
+            next_level = 8
 
-                exp_format = f"{experience} / {next_level} Total EXP"
+            exp_format = f"{experience} / {next_level} Total EXP"
 
-                current_format = f"{experience} / {next_level} EXP"
-            else:
-                user_data = level_json[str(user.id)]
-                level = user_data["level"]
+            current_format = f"{experience} / {next_level} EXP"
+        else:
+            user_data = level_json[str(user.id)]
+            level = user_data["level"]
 
-                experience = int(user_data["experience"])
+            experience = int(user_data["experience"])
 
-                position = user_data["position"]
+            position = user_data["position"]
 
-                last_level = int(level**3)
+            last_level = int(level**3)
 
-                next_level = int((level + 1) ** 3)
+            next_level = int((level + 1) ** 3)
 
-                difference_1 = next_level - last_level
+            difference_1 = next_level - last_level
 
-                difference_2 = user_data["experience"] - last_level
+            difference_2 = user_data["experience"] - last_level
 
-                percentage_1 = difference_2 / difference_1
+            percentage_1 = difference_2 / difference_1
 
-                percentage = int(percentage_1 * 100)
+            percentage = int(percentage_1 * 100)
 
-                exp_format = f"{experience} / {next_level} Total EXP"
+            exp_format = f"{experience} / {next_level} Total EXP"
 
-                current_level_1 = next_level - last_level
+            current_level_1 = next_level - last_level
 
-                current_level_2 = experience - last_level
+            current_level_2 = experience - last_level
 
-                current_format = f"{current_level_2} / {current_level_1} EXP"
+            current_format = f"{current_level_2} / {current_level_1} EXP"
 
-            font_2 = ImageFont.truetype("./card/ArialCE.ttf", 40)
+        font_2 = ImageFont.truetype("./card/ArialCE.ttf", 40)
 
-            font_1 = ImageFont.truetype("./card/ArialCE.ttf", 25)
-            background = Image.open("./card/card.png").convert("RGBA")
+        font_1 = ImageFont.truetype("./card/ArialCE.ttf", 25)
+        background = Image.open("./card/card.png").convert("RGBA")
 
-            dot = Image.open("./card/dot.png").convert("RGBA")
+        dot = Image.open("./card/dot.png").convert("RGBA")
 
-            avatar = Image.open(
-                requests.get(
-                    user.display_avatar.with_format("png").with_size(1024).url,
-                    stream=True,
-                ).raw
-            ).convert("RGBA")
+        avatar = Image.open(
+            requests.get(
+                user.display_avatar.with_format("png").with_size(1024).url,
+                stream=True,
+            ).raw
+        ).convert("RGBA")
 
-            mask = Image.open("./card/mask.png").convert("L")
+        mask = Image.open("./card/mask.png").convert("L")
 
-            output = ImageOps.fit(dot, mask.size, centering=(0.5, 0.5))
+        output = ImageOps.fit(dot, mask.size, centering=(0.5, 0.5))
 
-            output.putalpha(mask)
+        output.putalpha(mask)
 
-            if percentage == 0:
-                pass
+        if percentage == 0:
+            pass
 
-            elif percentage == 1:
-                background.paste(dot, (113, 200), mask=output)
+        elif percentage == 1:
+            background.paste(dot, (113, 200), mask=output)
 
-            else:
-                x = 113
+        else:
+            x = 113
 
-                background.paste(dot, (113, 200), mask=output)
+            background.paste(dot, (113, 200), mask=output)
 
-                for i in range(2, percentage):
-                    x += 7
+            for i in range(2, percentage):
+                x += 7
 
-                    background.paste(dot, (x, 200), mask=output)
+                background.paste(dot, (x, 200), mask=output)
 
-            draw = ImageDraw.Draw(background)
+        draw = ImageDraw.Draw(background)
 
-            x = 1200 - ((1200 - 842) + font_2.getsize(str(level))[0])
+        x = 1200 - ((1200 - 842) + font_2.getsize(str(level))[0])
 
-            draw.text(
-                (x, 80),
-                str(level),
-                font=font_2,
-                stroke_width=1,
-                stroke_fill=(255, 102, 102),
-            )
+        draw.text(
+            (x, 80),
+            str(level),
+            font=font_2,
+            stroke_width=1,
+            stroke_fill=(255, 102, 102),
+        )
 
-            x = x - 120
+        x = x - 120
 
-            draw.text(
-                (x, 80),
-                f"Level:",
-                font=font_2,
-                stroke_width=1,
-                stroke_fill=(255, 191, 225),
-            )
+        draw.text(
+            (x, 80),
+            f"Level:",
+            font=font_2,
+            stroke_width=1,
+            stroke_fill=(255, 191, 225),
+        )
 
-            x = x - 40 - font_2.getsize(f"#{position}")[0]
+        x = x - 40 - font_2.getsize(f"#{position}")[0]
 
-            draw.text(
-                (x, 80),
-                f"#{position}",
-                font=font_2,
-                stroke_width=1,
-                stroke_fill=(255, 191, 225),
-            )
+        draw.text(
+            (x, 80),
+            f"#{position}",
+            font=font_2,
+            stroke_width=1,
+            stroke_fill=(255, 191, 225),
+        )
 
-            x = x - 120
+        x = x - 120
 
-            draw.text(
-                (x, 80),
-                f"Rank:",
-                font=font_2,
-                stroke_width=1,
-                stroke_fill=(255, 191, 225),
-            )
+        draw.text(
+            (x, 80),
+            f"Rank:",
+            font=font_2,
+            stroke_width=1,
+            stroke_fill=(255, 191, 225),
+        )
 
-            x = 1200 - ((1200 - 842) + font_1.getsize(f"{exp_format}")[0])
+        x = 1200 - ((1200 - 842) + font_1.getsize(f"{exp_format}")[0])
 
-            draw.text(
-                (x, 135),
-                exp_format,
-                font=font_1,
-                stroke_width=1,
-                stroke_fill=(207, 165, 165),
-            )
+        draw.text(
+            (x, 135),
+            exp_format,
+            font=font_1,
+            stroke_width=1,
+            stroke_fill=(207, 165, 165),
+        )
 
-            x = 1200 - ((1200 - 842) + font_1.getsize(f"{current_format}")[0])
+        x = 1200 - ((1200 - 842) + font_1.getsize(f"{current_format}")[0])
 
-            draw.text(
-                (x, 170),
-                current_format,
-                font=font_1,
-                stroke_width=1,
-                stroke_fill=(207, 165, 165),
-            )
+        draw.text(
+            (x, 170),
+            current_format,
+            font=font_1,
+            stroke_width=1,
+            stroke_fill=(207, 165, 165),
+        )
 
-            x = 120
+        x = 120
 
-            name = user.name
+        name = user.name
 
-            y = 147
+        y = 147
 
-            font_3 = ImageFont.truetype("./card/ArialCE.ttf", 50)
+        font_3 = ImageFont.truetype("./card/ArialCE.ttf", 50)
+
+        f = font_3.getsize(name)
+
+        m = 18
+
+        while f[0] >= 380:
+            m -= 1
+
+            name = name[0:m]
 
             f = font_3.getsize(name)
 
-            m = 18
+        draw.text(
+            (x, y), name, font=font_3, stroke_width=1, stroke_fill=(255, 191, 225)
+        )
 
-            while f[0] >= 380:
-                m -= 1
+        x = x + 15 + font_3.getsize(name)[0]
 
-                name = name[0:m]
+        mask2 = Image.open("./card/mask_2.png").convert("L")
 
-                f = font_3.getsize(name)
+        output2 = ImageOps.fit(avatar, mask2.size, centering=(0.5, 0.5))
 
-            draw.text(
-                (x, y), name, font=font_3, stroke_width=1, stroke_fill=(255, 191, 225)
-            )
+        output2.putalpha(mask2)
 
-            x = x + 15 + font_3.getsize(name)[0]
+        avatar = avatar.resize((229, 229))
 
-            mask2 = Image.open("./card/mask_2.png").convert("L")
+        background.paste(avatar, (933, 46), mask=output2)
 
-            output2 = ImageOps.fit(avatar, mask2.size, centering=(0.5, 0.5))
+        x = user.id
 
-            output2.putalpha(mask2)
+        background.save(f"./cards/card_{x}.png", "PNG")
 
-            avatar = avatar.resize((229, 229))
+        await interaction.response.send_message(
+            file=discord.File(f"./cards/card_{x}.png")
+        )
 
-            background.paste(avatar, (933, 46), mask=output2)
-
-            x = user.id
-
-            background.save(f"./cards/card_{x}.png", "PNG")
-
-            await interaction.response.send_message(
-                file=discord.File(f"./cards/card_{x}.png")
-            )
-
-            os.remove(f"./cards/card_{x}.png")
-        except:
-            traceback.print_exc()
+        os.remove(f"./cards/card_{x}.png")
 
     @app_commands.command(
         description="View the top 10 users with the highest EXP in the server!"
