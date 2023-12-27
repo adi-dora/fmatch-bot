@@ -8,7 +8,7 @@ from discord.interactions import Interaction
 import uuid
 from dateutil import parser
 import topgg
-
+import ngrok
 from discord import app_commands
 from datetime import datetime as dt
 import server
@@ -23,18 +23,23 @@ class Votes(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        self.bot.topgg = topgg.WebhookManager(self.bot).dsl_webhook(
-            route="/dsl"
-        )
-        self.bot.topgg.run(5000)
+        # server.keep_alive()
+        self.bot.topgg = topgg.WebhookManager(self.bot).dsl_webhook(route="/dsl")
+        await self.bot.topgg.run(5000)
 
-        
+        lis = await ngrok.forward(
+            5000, authtoken="2a8QYDhQqhs3upeUqSQ7DgArT1U_5BEUtGjrRT8DtZXSDn3Gn"
+        )
+
+        print(lis.url())
+
         print("initialized vote")
-        # try:
-        #     server.keep_alive()
-        # #     print('keeping alive')
-        # except:
-        #     traceback.print_exc()
+
+    # try:
+    #     server.keep_alive()
+    # #     print('keeping alive')
+    # except:
+    #     traceback.print_exc()
 
     @commands.Cog.listener()
     async def on_dsl_vote(self, data):
