@@ -21,6 +21,7 @@ class RoleMenuSelect(discord.ui.Select):
         self.menu = role_menu
         super().__init__(
             custom_id="role_select",
+            min_values=0,
             max_values=self.menu["max_roles_selectable"],
             placeholder=self.menu["placeholder"],
             options=[
@@ -36,7 +37,9 @@ class RoleMenuSelect(discord.ui.Select):
             menu_roles = [
                 interaction.guild.get_role(val["role"]) for val in self.menu["roles"]
             ]
-            roles_selected = [interaction.guild.get_role(int(val)) for val in self.values]
+            roles_selected = [
+                interaction.guild.get_role(int(val)) for val in self.values
+            ]
 
             await interaction.user.remove_roles(
                 *menu_roles, reason="User updated rolemenu roles"
@@ -46,8 +49,11 @@ class RoleMenuSelect(discord.ui.Select):
             )
 
             await interaction.response.send_message(
-                "You have been given the selected roles successfully!", ephemeral=True
+                "You have been given the selected roles successfully!",
+                ephemeral=True,
+                delete_after=30,
             )
+            await interaction.message.edit()
         except:
             traceback.print_exc()
 
@@ -78,25 +84,39 @@ class RoleMenu(commands.Cog):
     )
 
     @menu.command()
+    @commands.has_permissions(administrator=True)
     async def create(self, interaction: discord.Interaction, menu_id: int | None):
-        with open("rolemenu.json", "r") as f:
-            menu = json.load(f)
-        menus = menu["menus"]
-        if menu_id is not None:
-            menus = menu["menus"][menu_id]
+        try:
+            with open("rolemenu.json", "r") as f:
+                menu = json.load(f)
+            menus = menu["menus"]
+            if menu_id is not None:
+                menus = menu["menus"][menu_id]
 
-        for menu in menus:
-            chan = interaction.guild.get_channel(menu["channel"])
-            msg = menu["message"]
-            file = (
-                discord.File(menu["file_path"])
-                if menu["file_path"] is not None
-                else discord.utils.MISSING
-            )
-            await chan.send(msg, file=file, view=RoleMenuView(menu))
+            for i in range(len(menus)):
+                chan = interaction.guild.get_channel(menus[i]["channel"])
+                msg = menus[i]["message"]
+                file = (
+                    discord.File(menus[i]["file_path"])
+                    if menus[i]["file_path"] is not None
+                    else discord.utils.MISSING
+                )
+                m = await chan.send(msg, file=file, view=RoleMenuView(menus[i]))
+
+                menu['menus'][i]["message_id"] = m.id
+
             await interaction.response.send_message(
                 "Your rolemenu(s) have been created successfully!"
             )
+            with open("rolemenu.json", "w") as f:
+                json.dump(menu, f, indent=1)
+        except:
+            traceback.print_exc()
+        
+        @menu.command()
+        @commands.has_permissions(administrator=True)
+        async def create_options(self, interaction:discord.Interaction):
+            pass
 
 
 async def setup(bot: commands.Bot):

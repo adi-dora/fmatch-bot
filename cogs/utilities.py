@@ -129,7 +129,7 @@ class Utilities(commands.Cog):
     async def on_message(self, message: discord.Message):
         with open("utilities.json", "r") as f:
             util = json.load(f)
-        if message.guild is None or len(message.mentions) == 0:
+        if message.guild is None or message.author == message.guild.me:
             return
 
         if str(message.author.id) in util["afk_status"]:

@@ -42,6 +42,17 @@ class Votes(commands.Cog):
         except:
             traceback.print_exc()
 
+    @app_commands.command(description="Vote for the server on Top.gg!")
+    async def vote(self, interaction: discord.Interaction):
+        embed = discord.Embed(
+            title="Vote Here",
+            description=f'[Click here to vote!]({vote_json["topgg_server_link"]})',
+            color=discord.Color.pink(),
+            timestamp=interaction.created_at,
+        ).set_footer(text="You can vote every 12 hours!")
+
+        await interaction.response.send_message(embed=embed)
+
     @app_commands.command()
     async def votereminder(self, interaction: discord.Interaction):
         if str(interaction.user.id) not in vote_json["votes"]:
