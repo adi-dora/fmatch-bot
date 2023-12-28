@@ -1,13 +1,16 @@
-import json
+import json, datetime, traceback
 import discord
+import utils.clock
 from discord import app_commands
 from discord.ext import commands
 from dateutil import parser
+from discord.app_commands import Choice
 
 
 class Utilities(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.clock = utils.clock.Clock(self.bot)
 
     @app_commands.command(description="Get information about a user!")
     @app_commands.describe(user="Provide a user or see your own stats")
@@ -140,6 +143,52 @@ class Utilities(commands.Cog):
                 await message.reply(
                     f'{mention.mention} is currently AFK! Status: ``{util["afk_status"][str(mention.id)]["status"] if util["afk_status"][str(mention.id)]["status"] != "" else "None"}`` They have been AFK since <t:{int(parser.parse(util["afk_status"][str(mention.id)]["afk_since"]).timestamp())}:R>'
                 )
+
+    @app_commands.command(description="Set a reminder!")
+    @app_commands.choices(
+        unit=[
+            Choice(name="Seconds", value="seconds"),
+            Choice(name="Minutes", value="minutes"),
+            Choice(name="Hours", value="hours"),
+            Choice(name="Days", value="days"),
+            Choice(name="Weeks", value="weeks"),
+            Choice(name="Months", value="months"),
+        ],
+    )
+    async def remindme(
+        self, interaction: discord.Interaction, amount: int, unit: str, reminder: str
+    ):
+        try:
+            until = datetime.datetime.now()
+            if unit == "months":
+                until += datetime.timedelta(weeks=amount * 4)
+            if unit == "weeks":
+                until += datetime.timedelta(weeks=amount)
+            if unit == "days":
+                until += datetime.timedelta(days=amount)
+
+            if unit == "hours":
+                until += datetime.timedelta(hours=amount)
+            if unit == "minutes":
+                until += datetime.timedelta(minutes=amount)
+            if unit == "seconds":
+                until += datetime.timedelta(seconds=amount)
+
+            await interaction.response.send_message(
+                f"Ok, I will remind you in {amount} {unit} about: {reminder}"
+            )
+
+            m = await interaction.original_response()
+
+            await self.clock.create(
+                reminder,
+                interaction.channel_id,
+                m.id,
+                interaction.user.id,
+                until,
+            )
+        except:
+            traceback.print_exc()
 
 
 async def setup(bot):
