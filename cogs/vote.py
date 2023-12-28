@@ -14,8 +14,10 @@ import math
 from discord import app_commands
 from datetime import datetime as dt
 
+
 from utils.level_utils import *
 from utils.vote_utils import *
+from utils import clock
 
 
 class Votes(commands.Cog):
@@ -39,22 +41,27 @@ class Votes(commands.Cog):
             print("initialized vote")
         except:
             traceback.print_exc()
-    
+
     @app_commands.command()
-    async def votereminder(self, interaction:discord.Interaction):
-        if str(interaction.user.id) not in vote_json['votes']:
-            return await interaction.response.send_message('You have not voted for the bot yet!')
-        
-        if vote_json['votes'][str(interaction.user.id)]['remind']:
-            vote_json['votes'][str(interaction.user.id)]['remind'] = False
-            await interaction.response.send_message("You have opted out of vote reminders successfully!")
+    async def votereminder(self, interaction: discord.Interaction):
+        if str(interaction.user.id) not in vote_json["votes"]:
+            return await interaction.response.send_message(
+                "You have not voted for the bot yet!"
+            )
+
+        if vote_json["votes"][str(interaction.user.id)]["remind"]:
+            vote_json["votes"][str(interaction.user.id)]["remind"] = False
+            await interaction.response.send_message(
+                "You have opted out of vote reminders successfully!"
+            )
 
         else:
-            vote_json['votes'][str(interaction.user.id)]['remind'] = True
-            await interaction.response.send_message("You have opted into vote reminders successfully! You will be notified 12 hours after your next vote!")
+            vote_json["votes"][str(interaction.user.id)]["remind"] = True
+            await interaction.response.send_message(
+                "You have opted into vote reminders successfully! You will be notified 12 hours after your next vote!"
+            )
 
         dump_vote_json(vote_json)
-        
 
     @commands.Cog.listener()
     async def on_dsl_vote(self, data):
@@ -66,14 +73,13 @@ class Votes(commands.Cog):
                 vote_json["votes"][data["user"]] = {
                     "num_votes": 1,
                     "last_vote": str(dt.now()),
-                    "remind": False
+                    "remind": False,
                 }
             else:
                 vote_json["votes"][data["user"]]["num_votes"] += 1
 
             try:
                 level_json[data["user"]]["experience"] += 100
-                
 
             except KeyError:
                 level_json[data["user"]] = {
@@ -82,22 +88,24 @@ class Votes(commands.Cog):
                     "position": len(level_json),
                     "last_message": str(dt.now()),
                 }
-            if vote_json['votes'][data["user"]]["num_votes"] == 10:
+            if vote_json["votes"][data["user"]]["num_votes"] == 10:
                 level_json[data["user"]]["experience"] += 1000
-            
-            if vote_json['votes'][data["user"]]["num_votes"] == 30:
-                role = guild.get_role(vote_json['30_votes_role'])
-                await user.add_roles(role, reason='User voted 30 times')
-            
-            if vote_json['votes'][data["user"]]["num_votes"] == 50:
-                role = guild.get_role(vote_json['50_votes_role'])
-                await user.add_roles(role, reason='User voted 50 times')
-            
+
+            if vote_json["votes"][data["user"]]["num_votes"] == 30:
+                role = guild.get_role(vote_json["30_votes_role"])
+                await user.add_roles(role, reason="User voted 30 times")
+
+            if vote_json["votes"][data["user"]]["num_votes"] == 50:
+                role = guild.get_role(vote_json["50_votes_role"])
+                await user.add_roles(role, reason="User voted 50 times")
+
             if (
-                    level_json[data["user"]]["experience"]
-                    > (level_json[data["user"]]["level"] + 1) ** 3
-                ):
-                    level_json[data["user"]]["level"] = math.floor(level_json[data["user"]]["experience"] ** (1/3))
+                level_json[data["user"]]["experience"]
+                > (level_json[data["user"]]["level"] + 1) ** 3
+            ):
+                level_json[data["user"]]["level"] = math.floor(
+                    level_json[data["user"]]["experience"] ** (1 / 3)
+                )
 
             dump_level_json(level_json)
             dump_vote_json(vote_json)
@@ -119,11 +127,23 @@ class Votes(commands.Cog):
             )
 
             if vote_json["votes"][str(user.id)]["remind"]:
-                embed.description += "You will be reminded to vote again after 12 hours!"
+                embed.description += (
+                    " You will be reminded to vote again after 12 hours!"
+                )
             else:
-                embed.description += "You will be able to vote again after 12 hours! If you would like to be reminded, please enable vote reminders!"
+                embed.description += " You will be able to vote again after 12 hours! If you would like to be reminded, please enable vote reminders!"
 
             await user.send(embed=embed)
+
+            if vote_json["votes"][str(user.id)]["remind"]:
+                clock_inst: clock.Clock = clock.Clock.instances[0]
+                await clock_inst.create(
+                    "vote reminder",
+                    None,
+                    None,
+                    user.id,
+                    dt.now() + datetime.timedelta(hours=12),
+                )
         except:
             traceback.print_exc()
 

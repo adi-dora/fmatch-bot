@@ -3,10 +3,13 @@ import discord
 from discord.ext import commands
 
 import datetime, typing, asyncio, json, traceback
+from utils.vote_utils import *
 
 
 class Clock:  # Due to the size of this script, we will make a seperate class for it
     """The class for interfacing with reminders"""
+
+    instances = []
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -17,6 +20,7 @@ class Clock:  # Due to the size of this script, we will make a seperate class fo
             asyncio.Task
         ] = None  # The task that is currently running
         self.reminder: dict = None
+        Clock.instances.append(self)
 
         self.bot.setup_hook = self.setup_hook
 
@@ -28,7 +32,7 @@ class Clock:  # Due to the size of this script, we will make a seperate class fo
         with open("reminders.json", "r") as f:
             reminders = json.load(f)
 
-        if len(reminders['reminders']) == 0:
+        if len(reminders["reminders"]) == 0:
             return None
 
         reminders["reminders"] = sorted(
@@ -61,13 +65,15 @@ class Clock:  # Due to the size of this script, we will make a seperate class fo
             }
         )
 
-        if (not self._task or self._task.done()) or endtime < self.endtime:  # if the timer ends sooner then the current scheduled one
+        if (
+            not self._task or self._task.done()
+        ) or endtime < self.endtime:  # if the timer ends sooner then the current scheduled one
             if self._task and not self._task.done():
                 self._task.cancel()
             self._task = self.bot.loop.create_task(self.end_timer(endtime))
 
             self.endtime = endtime
-            self.reminder = reminders['reminders'][-1]
+            self.reminder = reminders["reminders"][-1]
 
         with open("reminders.json", "w") as f:
             json.dump(reminders, f, indent=1)
@@ -83,7 +89,6 @@ class Clock:  # Due to the size of this script, we will make a seperate class fo
         if (
             not self._task or self._task.done()
         ):  # if the task is done or no task exists we just create the task
-            
             self.endtime = datetime.datetime.fromtimestamp(
                 reminder["endtime"]
             )  # store the endtime
@@ -106,23 +111,31 @@ class Clock:  # Due to the size of this script, we will make a seperate class fo
     async def end_timer(self, endtime):
         try:
             print("Endtime 2: ", endtime)
-            await discord.utils.sleep_until(
-                endtime
-            )  # sleeping until the endtime
+            await discord.utils.sleep_until(endtime)  # sleeping until the endtime
 
             # send your message here
             user = self.bot.get_user(self.reminder["user_id"])
-            channel = await self.bot.fetch_channel(self.reminder["channel_id"])
-            msg = channel.get_partial_message(self.reminder["message_id"])
-            await msg.reply(
-                f'{user.mention} to be reminded of: {self.reminder["reminder"]}'
-            )
+            if self.reminder["channel_id"] is None:
+                await user.send(
+                    embed=discord.Embed(
+                        title="Vote Reminder",
+                        description=f"It has been 12 hours since your last vote!\n\n [Click here to vote!]({vote_json['topgg_server_link']})",
+                        color=discord.Color.pink(),
+                        timestamp=datetime.datetime.now(),
+                    )
+                )
+            else:
+                channel = await self.bot.fetch_channel(self.reminder["channel_id"])
+                msg = channel.get_partial_message(self.reminder["message_id"])
+                await msg.reply(
+                    f'{user.mention} to be reminded of: {self.reminder["reminder"]}'
+                )
 
-            with open('reminders.json', 'r') as f:
+            with open("reminders.json", "r") as f:
                 reminders = json.load(f)
-            
+
             reminders["reminders"].remove(self.reminder)
-            with open('reminders.json', 'w') as f:
+            with open("reminders.json", "w") as f:
                 json.dump(reminders, f, indent=1)
             self.bot.loop.create_task(self.update())  # re update
         except:
