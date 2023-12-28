@@ -19,8 +19,14 @@ from discord.app_commands import AppCommandError
 class RoleMenuOptions(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
+        with open("rolemenu.json", "r") as f:
+            menu = json.load(f)
 
-        self.add_item(discord.ui.Button(label='Start Here', url='https://canary.discord.com/channels/647209569285701642/794680783297970206/1190060885117521980'))
+        self.add_item(
+            discord.ui.Button(
+                label="Start Here", url=menu["first_rolemenu_message_link"]
+            )
+        )
 
     @discord.ui.button(
         label="Check Roles",
@@ -51,6 +57,7 @@ class RoleMenuOptions(discord.ui.View):
         await interaction.response.send_message(
             embed=embed, ephemeral=True, delete_after=30
         )
+
 
 class RoleMenuSelect(discord.ui.Select):
     def __init__(self, role_menu: dict):
