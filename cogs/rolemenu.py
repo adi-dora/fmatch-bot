@@ -20,6 +20,8 @@ class RoleMenuOptions(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
 
+        self.add_item(discord.ui.Button(label='Start Here', url='https://canary.discord.com/channels/647209569285701642/794680783297970206/1190060885117521980'))
+
     @discord.ui.button(
         label="Check Roles",
         custom_id="check_roles_btn",
@@ -49,7 +51,6 @@ class RoleMenuOptions(discord.ui.View):
         await interaction.response.send_message(
             embed=embed, ephemeral=True, delete_after=30
         )
-
 
 class RoleMenuSelect(discord.ui.Select):
     def __init__(self, role_menu: dict):
