@@ -16,6 +16,41 @@ from discord.app_commands import Choice
 from discord.app_commands import AppCommandError
 
 
+class RoleMenuOptions(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
+
+    @discord.ui.button(
+        label="Check Roles",
+        custom_id="check_roles_btn",
+        style=discord.ButtonStyle.primary,
+    )
+    async def check_roles_btn(
+        self, interaction: discord.Interaction, button: discord.Button
+    ):
+        with open("rolemenu.json", "r") as f:
+            roles = json.load(f)
+        embed = discord.Embed(
+            description="Here are all the roles you have from each rolemenu!",
+            color=discord.Color.pink(),
+            timestamp=interaction.created_at,
+        ).set_thumbnail(url=interaction.user.avatar.url)
+        for menu in roles["menus"]:
+            embed.add_field(
+                name=menu["name"],
+                value="\n".join(
+                    interaction.guild.get_role(x["role"]).mention
+                    for x in menu["roles"]
+                    if interaction.guild.get_role(x["role"]) in interaction.user.roles
+                ),
+                inline=False,
+            )
+
+        await interaction.response.send_message(
+            embed=embed, ephemeral=True, delete_after=30
+        )
+
+
 class RoleMenuSelect(discord.ui.Select):
     def __init__(self, role_menu: dict):
         self.menu = role_menu
@@ -103,7 +138,7 @@ class RoleMenu(commands.Cog):
                 )
                 m = await chan.send(msg, file=file, view=RoleMenuView(menus[i]))
 
-                menu['menus'][i]["message_id"] = m.id
+                menu["menus"][i]["message_id"] = m.id
 
             await interaction.response.send_message(
                 "Your rolemenu(s) have been created successfully!"
@@ -112,11 +147,11 @@ class RoleMenu(commands.Cog):
                 json.dump(menu, f, indent=1)
         except:
             traceback.print_exc()
-        
-        @menu.command()
-        @commands.has_permissions(administrator=True)
-        async def create_options(self, interaction:discord.Interaction):
-            pass
+
+    @menu.command()
+    @commands.has_permissions(administrator=True)
+    async def create_options(self, interaction: discord.Interaction):
+        await interaction.response.send_message(view=RoleMenuOptions())
 
 
 async def setup(bot: commands.Bot):
