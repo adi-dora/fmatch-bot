@@ -3,28 +3,48 @@ import random
 import traceback
 import discord
 from discord.ext import commands
-import uuid
-from dateutil import parser
 
-from typing_extensions import Annotated
+from discord import app_commands
 
-
-from discord import Permissions, app_commands
-from datetime import datetime as dt
-
-from discord.app_commands import Choice
-from discord.app_commands import AppCommandError
+from discord.interactions import Interaction
 
 
-class RoleMenuOptions(discord.ui.View):
+class ClearRolesButton(discord.ui.Button):
+    def __init__(self, menu: dict):
+        super().__init__(label=menu["name"])
+        self.menu = menu
+
+    async def callback(self, interaction: Interaction):
+        roles = [
+            interaction.guild.get_role(role_data["role"])
+            for role_data in self.menu["roles"]
+            if interaction.guild.get_role(role_data["role"]) in interaction.user.roles
+        ]
+        await interaction.user.remove_roles(
+            *roles, reason=f"User cleared {self.label} roles"
+        )
+
+        await interaction.response.send_message(
+            (", ".join(role.mention for role in roles) if len(roles) != 0 else "No Roles") + " removed", ephemeral=True
+        )
+
+
+class ClearRolesView(discord.ui.View):
+    def __init__(self, menus: list):
+        super().__init__(timeout=180)
+        for menu in menus:
+            self.add_item(ClearRolesButton(menu))
+
+
+class RoleMenuOptionsView(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
         with open("rolemenu.json", "r") as f:
-            menu = json.load(f)
+            self.menu = json.load(f)
 
         self.add_item(
             discord.ui.Button(
-                label="Start Here", url=menu["first_rolemenu_message_link"]
+                label="Start Here", url=self.menu["first_rolemenu_message_link"]
             )
         )
 
@@ -36,14 +56,12 @@ class RoleMenuOptions(discord.ui.View):
     async def check_roles_btn(
         self, interaction: discord.Interaction, button: discord.Button
     ):
-        with open("rolemenu.json", "r") as f:
-            roles = json.load(f)
         embed = discord.Embed(
             description="Here are all the roles you have from each rolemenu!",
             color=discord.Color.pink(),
             timestamp=interaction.created_at,
         ).set_thumbnail(url=interaction.user.avatar.url)
-        for menu in roles["menus"]:
+        for menu in self.menu["menus"]:
             embed.add_field(
                 name=menu["name"],
                 value="\n".join(
@@ -57,6 +75,24 @@ class RoleMenuOptions(discord.ui.View):
         await interaction.response.send_message(
             embed=embed, ephemeral=True, delete_after=30
         )
+
+    @discord.ui.button(
+        label="Clear Roles",
+        custom_id="clear_roles_btn",
+        style=discord.ButtonStyle.danger,
+    )
+    async def clear_roles_btn(
+        self, interaction: discord.Interaction, button: discord.Button
+    ):
+        try:
+            await interaction.response.send_message(
+                "Choose the category you would like to clear!",
+                view=ClearRolesView(self.menu["menus"]),
+                ephemeral=True,
+                delete_after=180,
+            )
+        except:
+            traceback.print_exc()
 
 
 class RoleMenuSelect(discord.ui.Select):
@@ -121,6 +157,7 @@ class RoleMenu(commands.Cog):
             self.bot.add_view(
                 RoleMenuView(role_menu), message_id=role_menu["message_id"]
             )
+        self.bot.add_view(RoleMenuOptionsView(), message_id=menu['menu_options_message_id'])
 
     menu = app_commands.Group(
         name="rolemenu", description="Create and manage role menus"
@@ -159,7 +196,19 @@ class RoleMenu(commands.Cog):
     @menu.command()
     @commands.has_permissions(administrator=True)
     async def create_options(self, interaction: discord.Interaction):
-        await interaction.response.send_message(view=RoleMenuOptions())
+        with open('rolemenu.json', 'r') as f:
+            menu = json.load(f)
+        
+        chan = interaction.guild.get_channel(menu['menu_options_channel'])
+
+        m = await chan.send(menu['menu_options_message'], view=RoleMenuOptionsView())
+
+        menu['menu_options_message_id'] = m.id
+
+        with open('rolemenu.json', 'w') as f:
+            json.dump(menu, f, indent=1)
+        
+        await interaction.response.send_message("The Rolemenu options have been sent successfully!")
 
 
 async def setup(bot: commands.Bot):
