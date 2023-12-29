@@ -1,64 +1,70 @@
 {
-  "menus": [
+ "first_rolemenu_message_link": "https://canary.discord.com/channels/647209569285701642/794680783297970206/1190060885117521980",
+ "menu_options_message": "Test message",
+ "menu_options_channel": 1135052505139658782,
+ "menu_options_message_id": 1190111494281637910,
+ "menus": [
+  {
+   "name": "Ping Roles",
+   "message": null,
+   "file_path": "./res/281940778970775563.png",
+   "message_id": 1190111452405706824,
+   "placeholder": "What is your favorite letter?",
+   "channel": 1135052505139658782,
+   "max_roles_selectable": 3,
+   "roles": [
     {
-      "message": null,
-      "file_path": "./res/281940778970775563.png",
-      "message_id": null,
-      "placeholder": "What is your favorite letter?",
-      "channel": 794680791710826496,
-      "max_roles_selectable": 3,
-      "roles": [
-        {
-          "label": "A",
-          "emoji": "<:aACpfp:746452464521445578>",
-          "role": 737030359593517056
-        },
-        {
-          "label": "B",
-          "emoji": "<:Verdant:739318800029319269>",
-          "role": 735998154347905177
-        },
-        {
-          "label": "C",
-          "emoji": "<:Confirm:736236531907559508>",
-          "role": 724741663347572756
-        },
-        {
-          "label": "D",
-          "emoji": "<:Decline:736236532028932146>",
-          "role": 737733981692493824
-        }
-      ]
+     "label": "A",
+     "emoji": "<:aACpfp:746452464521445578>",
+     "role": 737030359593517056
     },
     {
-        "message": "Word yo",
-        "file_path": "./res/512398565994266626.png",
-        "message_id": null,
-        "placeholder": "What is your favorite letter?",
-        "channel": 794680791710826496,
-        "max_roles_selectable": 1,
-        "roles": [
-          {
-            "label": "E",
-            "emoji": "<:aACpfp:746452464521445578>",
-            "role": 737030359593517056
-          },
-          {
-            "label": "F",
-            "emoji": "<:Verdant:739318800029319269>",
-            "role": 735998154347905177
-          },
-          {
-            "label": "G",
-            "emoji": "<:Confirm:736236531907559508>",
-            "role": 724741663347572756
-          },
-          {
-            "label": "H",
-            "emoji": "<:Decline:736236532028932146>",
-            "role": 737733981692493824
-          }
-        ]
-      }
-  ]
+     "label": "B",
+     "emoji": "<:Verdant:739318800029319269>",
+     "role": 735998154347905177
+    },
+    {
+     "label": "C",
+     "emoji": "<:Confirm:736236531907559508>",
+     "role": 724741663347572756
+    },
+    {
+     "label": "D",
+     "emoji": "<:Decline:736236532028932146>",
+     "role": 737733981692493824
+    }
+   ]
+  },
+  {
+   "name": "Bio Roles",
+   "message": "Word yo",
+   "file_path": "./res/512398565994266626.png",
+   "message_id": 1190111453907263590,
+   "placeholder": "What is your favorite letter?",
+   "channel": 1135052505139658782,
+   "max_roles_selectable": 1,
+   "roles": [
+    {
+     "label": "E",
+     "emoji": "<:aACpfp:746452464521445578>",
+     "role": 736392407389700209
+    },
+    {
+     "label": "F",
+     "emoji": "<:Verdant:739318800029319269>",
+     "role": 736392371973128312
+    },
+    {
+     "label": "G",
+     "emoji": "<:Confirm:736236531907559508>",
+     "role": 736400541990781029
+    },
+    {
+     "label": "H",
+     "emoji": "<:Decline:736236532028932146>",
+     "role": 736400586215522406
+    }
+   ]
+  }
+ ]
 }

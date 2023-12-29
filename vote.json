@@ -1,8 +1,18 @@
 {
- "vote_channel": null,
- "topgg_server_link": null,
+ "vote_channel": 1135052505139658782,
+ "topgg_server_link": "https://top.gg/servers/647209569285701642",
  "30_votes_role": null,
  "50_votes_role": null,
  "votes": {
+  "512398565994266626": {
+   "num_votes": 4,
+   "last_vote": "2023-12-27 18:47:51.432550",
+   "remind": false
+  },
+  "281940778970775563": {
+   "num_votes": 1,
+   "last_vote": "2023-12-28 15:29:56.470418",
+   "remind": false
+  }
  }
 }
