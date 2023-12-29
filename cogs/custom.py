@@ -10,7 +10,7 @@ class Custom(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    @commands.has_permissions(administrator=True)
+    @app_commands.checks.has_permissions(administrator=True)
     async def example(self, ctx: commands.Context):
         chan_to_send = ctx.guild.get_channel(1135052505139658782)
         await chan_to_send.send(
@@ -19,7 +19,7 @@ class Custom(commands.Cog):
         await ctx.send("Msg sent to channel")
 
     @app_commands.command()
-    @commands.has_permissions(administrator=True)
+    @app_commands.checks.has_permissions(administrator=True)
     async def example2(self, interation: discord.Interaction):
         chan_to_send = interation.guild.get_channel(1135052505139658782)
         await chan_to_send.send(

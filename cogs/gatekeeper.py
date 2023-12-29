@@ -191,7 +191,7 @@ class Gatekeeper(commands.Cog):
     @app_commands.describe(
         channel="The channel where the gatekeeper messages will be sent. If none, the current will be shown"
     )
-    @commands.has_permissions(administrator=True)
+    @app_commands.checks.has_permissions(administrator=True)
     async def channel(
         self, interaction: Interaction, channel: discord.TextChannel | None
     ):
@@ -221,7 +221,7 @@ class Gatekeeper(commands.Cog):
         )
 
     @gatekeeper.command()
-    @commands.has_permissions(administrator=True)
+    @app_commands.checks.has_permissions(administrator=True)
     async def rules(self, interaction: Interaction, message: str):
         with open("gatekeeper.json", "r") as f:
             gate = json.load(f)
@@ -238,7 +238,7 @@ class Gatekeeper(commands.Cog):
     @gatekeeper.command(
         description="Provide the link for an image to be displayed with the rules"
     )
-    @commands.has_permissions(administrator=True)
+    @app_commands.checks.has_permissions(administrator=True)
     async def link(self, interaction: Interaction, link: str):
         with open("gatekeeper.json", "r") as f:
             gate = json.load(f)
@@ -256,7 +256,7 @@ class Gatekeeper(commands.Cog):
     @gatekeeper.command(
         description="Review the settings for the Gatekeepeer and publish"
     )
-    @commands.has_permissions(administrator=True)
+    @app_commands.checks.has_permissions(administrator=True)
     async def create(self, interaction: Interaction):
         with open("gatekeeper.json", "r") as f:
             gate = json.load(f)
@@ -310,7 +310,7 @@ class Gatekeeper(commands.Cog):
     @gatekeeper.command(
         description="Clear the message and link for the Gatekeeper functionality"
     )
-    @commands.has_permissions(administrator=True)
+    @app_commands.checks.has_permissions(administrator=True)
     async def clear(self, interaction: Interaction):
         with open("gatekeeper.json", "r") as f:
             gate = json.load(f)

@@ -154,7 +154,7 @@ class VC(commands.Cog):
     @vc.command(
         description="Set the category into which your VC channels will be created!"
     )
-    @commands.has_permissions(administrator=True)
+    @app_commands.checks.has_permissions(administrator=True)
     async def category(
         self, interaction: discord.Interaction, category: discord.CategoryChannel
     ):
@@ -181,7 +181,7 @@ class VC(commands.Cog):
     @vc.command(
         description="Set the role that's required to claim and manage Voice Channels"
     )
-    @commands.has_permissions(
+    @app_commands.checks.has_permissions(
         manage_roles=True, manage_channels=True, manage_guild=True
     )
     async def role(self, interaction: discord.Interaction, role: discord.Role | None):

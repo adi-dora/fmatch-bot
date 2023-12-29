@@ -164,7 +164,7 @@ class RoleMenu(commands.Cog):
     )
 
     @menu.command()
-    @commands.has_permissions(administrator=True)
+    @app_commands.checks.has_permissions(administrator=True)
     async def create(self, interaction: discord.Interaction, menu_id: int | None):
         try:
             with open("rolemenu.json", "r") as f:
@@ -194,7 +194,7 @@ class RoleMenu(commands.Cog):
             traceback.print_exc()
 
     @menu.command()
-    @commands.has_permissions(administrator=True)
+    @app_commands.checks.has_permissions(administrator=True)
     async def create_options(self, interaction: discord.Interaction):
         with open('rolemenu.json', 'r') as f:
             menu = json.load(f)

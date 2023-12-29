@@ -180,7 +180,7 @@ class Giveaway(commands.Cog):
         name="start",
         description="Start a giveaway!",
     )
-    @commands.has_permissions(administrator=True)
+    @app_commands.checks.has_permissions(administrator=True)
     @app_commands.describe(
         channel="The channel to host the giveaway in",
         pingrole="The role to ping for the giveaway. Optional",
@@ -278,7 +278,7 @@ class Giveaway(commands.Cog):
         id="The ID of the giveaway. Displayed in the footer of the giveaway embed.",
         user="The winner to reroll. If no one is provided, every winner will be rerolled.",
     )
-    @commands.has_permissions(administrator=True)
+    @app_commands.checks.has_permissions(administrator=True)
     async def reroll(
         self,
         interaction: Interaction,

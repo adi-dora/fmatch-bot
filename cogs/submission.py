@@ -420,7 +420,7 @@ class Submission(commands.Cog):
             traceback.print_exc()
 
     @app_commands.command()
-    @commands.has_permissions(administrator=True)
+    @app_commands.checks.has_permissions(administrator=True)
     async def suggestion(self, interaction: discord.Interaction):
         suggest_chan = interaction.guild.get_channel(
             submission_json["suggestion_channel"]
@@ -433,7 +433,7 @@ class Submission(commands.Cog):
         await interaction.response.send_message("Suggestion message sent")
 
     @app_commands.command()
-    @commands.has_permissions(administrator=True)
+    @app_commands.checks.has_permissions(administrator=True)
     async def confession(self, interaction: discord.Interaction):
         confession_chan = interaction.guild.get_channel(
             submission_json["confession_channel"]
@@ -446,7 +446,7 @@ class Submission(commands.Cog):
         await interaction.response.send_message("Confession message sent")
 
     @app_commands.command()
-    @commands.has_permissions(administrator=True)
+    @app_commands.checks.has_permissions(administrator=True)
     async def staff(self, interaction: discord.Interaction):
         help_chan = interaction.guild.get_channel(submission_json["help_channel"])
         m = await help_chan.send(submission_json["help_message"], view=HelpView())

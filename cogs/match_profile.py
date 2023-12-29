@@ -396,7 +396,7 @@ class Profile(commands.Cog):
     )
 
     @match.command()
-    @commands.has_permissions(administrator=True)
+    @app_commands.checks.has_permissions(administrator=True)
     async def create(self, interaction: discord.Interaction):
         chan = interaction.guild.get_channel(profile_json["send_profile_channel"])
         m = await chan.send("Create your profile here!", view=ProfileView(self.bot))
@@ -404,7 +404,7 @@ class Profile(commands.Cog):
         dump_profile_json(profile_json)
 
     @app_commands.command()
-    @commands.has_permissions(manage_guild=True)
+    @app_commands.checks.has_permissions(manage_guild=True)
     async def prdelete(self, interaction: discord.Interaction, user: discord.Member):
         if str(user.id) not in profile_json["profiles"]:
             return await interaction.response.send_message(
@@ -417,7 +417,7 @@ class Profile(commands.Cog):
         )
 
     @app_commands.command()
-    @commands.has_permissions(administrator=True)
+    @app_commands.checks.has_permissions(administrator=True)
     async def toggleselfie(self, interaction: discord.Interaction):
         profile_json["selfie_verification"] = not profile_json["selfie_verification"]
         dump_profile_json(profile_json)

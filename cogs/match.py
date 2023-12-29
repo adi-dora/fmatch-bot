@@ -341,7 +341,7 @@ class Match(commands.Cog):
         # self.create_matches_loop.start()
 
     @app_commands.command()
-    @commands.has_permissions(manage_guild=True)
+    @app_commands.checks.has_permissions(manage_guild=True)
     async def matchmessage(self, interaction: discord.Interaction, msg: str | None):
         with open("match.json", "r") as f:
             match = json.load(f)
@@ -364,7 +364,7 @@ class Match(commands.Cog):
         await interaction.response.send_message("Your message has been set!")
 
     @app_commands.command()
-    @commands.has_permissions(manage_channels=True)
+    @app_commands.checks.has_permissions(manage_channels=True)
     async def matchchannel(
         self, interaction: discord.Interaction, channel: discord.TextChannel | None
     ):

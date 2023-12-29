@@ -101,7 +101,7 @@ class Moderation(commands.Cog):
         dump_moderation_json(moderation_json)
 
     @app_commands.command(description="Timeout a user!")
-    @commands.has_permissions(moderate_members=True)
+    @app_commands.checks.has_permissions(moderate_members=True)
     @app_commands.choices(
         unit=[
             Choice(name="Seconds", value="seconds"),

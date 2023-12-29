@@ -1,8 +1,6 @@
-import traceback
 import discord
 import random
 from discord.ext import commands, tasks
-from discord.interactions import Interaction
 from PIL import Image, ImageFont, ImageDraw, ImageOps, ImageFont, ImageDraw
 import os
 from dateutil import parser
@@ -24,9 +22,8 @@ class Levels(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
+        level_up_channel = message.guild.get_channel(None) #TODO: Insert ID of channel that you want level up notifications sent to here
         if message.author.bot:
-            return
-        if message.content.startswith("!rank"):
             return
         try:
             level_json[str(message.author.id)]
@@ -50,11 +47,11 @@ class Levels(commands.Cog):
                 >= (level_json[str(message.author.id)]["level"] + 1) ** 3
             ):
                 level_json[str(message.author.id)]["level"] += 1
-                await message.reply(
+                await level_up_channel.send(
                     f'{message.author.mention} has leveled up! They are now level {level_json[str(message.author.id)]["level"]}'
                 )
 
-    @tasks.loop(seconds=30)
+    @tasks.loop(minutes=5)
     async def sort_and_push_lb(self):
         x = dict(
             sorted(level_json.items(), key=lambda k: k[1]["experience"], reverse=True)
