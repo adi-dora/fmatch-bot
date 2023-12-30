@@ -10,8 +10,8 @@ class Misc(commands.Cog):
 
     @app_commands.command(description="Give a hug!")
     @app_commands.describe(member="Select a member!")
-    async def hug(self, ctx: commands.Context, *, member: str) -> None:
-        if member == ctx.author:
+    async def hug(self, interaction: discord.Interaction, member: discord.Member) -> None:
+        if member == interaction.user:
             bug = [
                 "https://cdn.weeb.sh/images/rkIK_u7Pb.gif",
                 "https://cdn.weeb.sh/images/r1v2_uXP-.gif",
@@ -38,17 +38,17 @@ class Misc(commands.Cog):
             ]
 
             embed = discord.Embed(
-                description=f"{ctx.author.mention} is lonely! Here's a hug!",
+                description=f"{interaction.user.mention} is lonely! Here's a hug!",
                 color=0xFF6666,
             )
 
-            embed.set_author(name=f"{ctx.guild.name}", icon_url=ctx.guild.icon.url)
+            embed.set_author(name=f"{interaction.guild.name}", icon_url=interaction.guild.icon.url)
 
-            embed.set_footer(text=ctx.author, icon_url=ctx.author.display_avatar.url)
+            embed.set_footer(text=interaction.user, icon_url=interaction.user.display_avatar.url)
 
             embed.set_image(url=random.choice(bug))
 
-            await ctx.send(embed=embed)
+            await interaction.response.send_message(embed=embed)
 
         else:
             bug = [
@@ -77,29 +77,22 @@ class Misc(commands.Cog):
             ]
 
             embed = discord.Embed(
-                description=f"{ctx.author.mention} hugs {member}!", color=0xFF6666
+                description=f"{interaction.user.mention} hugs {member}!", color=0xFF6666
             )
 
-            embed.set_author(name=f"{ctx.guild.name}", icon_url=ctx.guild.icon.url)
+            embed.set_author(name=f"{interaction.guild.name}", icon_url=interaction.guild.icon.url)
 
-            embed.set_footer(text=ctx.author, icon_url=ctx.author.display_avatar.url)
+            embed.set_footer(text=interaction.user, icon_url=interaction.user.display_avatar.url)
 
             embed.set_image(url=random.choice(bug))
 
-            await ctx.send(embed=embed)
+            await interaction.response.send_message(embed=embed)
 
-    @hug.error
-    async def hug_error(ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please mention someone to hug!")
-
-        if isinstance(error, commands.BadArgument):
-            await ctx.send("Couldn't find that user!")
 
     @app_commands.command(name="kiss", description="Give a kiss!")
     @app_commands.describe(member="Select a member!")
-    async def kiss(self, ctx: commands.Context, *, member: str) -> None:
-        if member == ctx.author:
+    async def kiss(self, interaction: discord.Interaction, member: discord.Member) -> None:
+        if member == interaction.user:
             kuss = [
                 "https://cdn.weeb.sh/images/rkFSiEedf.gif",
                 "https://cdn.weeb.sh/images/ByVQha_w-.gif",
@@ -129,17 +122,17 @@ class Misc(commands.Cog):
             ]
 
             embed = discord.Embed(
-                description=f"No one kissed {ctx.author.mention} :( Here's a quick kiss for you!",
+                description=f"No one kissed {interaction.user.mention} :( Here's a quick kiss for you!",
                 color=0xFF6666,
             )
 
-            embed.set_author(name=f"{ctx.guild.name}", icon_url=ctx.guild.icon.url)
+            embed.set_author(name=f"{interaction.guild.name}", icon_url=interaction.guild.icon.url)
 
-            embed.set_footer(text=ctx.author, icon_url=ctx.author.display_avatar.url)
+            embed.set_footer(text=interaction.user, icon_url=interaction.user.display_avatar.url)
 
             embed.set_image(url=random.choice(kuss))
 
-            await ctx.send(embed=embed)
+            await interaction.response.send_message(embed=embed)
 
         else:
             kuss = [
@@ -171,29 +164,22 @@ class Misc(commands.Cog):
             ]
 
             embed = discord.Embed(
-                description=f"{ctx.author.mention} kisses {member}!", color=0xFF6666
+                description=f"{interaction.user.mention} kisses {member}!", color=0xFF6666
             )
 
-            embed.set_author(name=f"{ctx.guild.name}", icon_url=ctx.guild.icon.url)
+            embed.set_author(name=f"{interaction.guild.name}", icon_url=interaction.guild.icon.url)
 
-            embed.set_footer(text=ctx.author, icon_url=ctx.author.display_avatar.url)
+            embed.set_footer(text=interaction.user, icon_url=interaction.user.display_avatar.url)
 
             embed.set_image(url=random.choice(kuss))
 
-            await ctx.send(embed=embed)
+            await interaction.response.send_message(embed=embed)
 
-    @kiss.error
-    async def kiss_error(ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please mention someone to kiss!")
-
-        if isinstance(error, commands.BadArgument):
-            await ctx.send("Couldn't find that user!")
 
     @app_commands.command(name="cuddle", description="Give a cuddle!")
     @app_commands.describe(member="Select a member!")
-    async def cuddle(self, ctx: commands.Context, *, member: str) -> None:
-        if member == ctx.author:
+    async def cuddle(self, interaction: discord.Interaction, member: discord.Member) -> None:
+        if member == interaction.user:
             cud = [
                 "https://cdn.weeb.sh/images/rylgIUmPW.gif",
                 "https://cdn.weeb.sh/images/Byd1IUmP-.gif",
@@ -230,17 +216,17 @@ class Misc(commands.Cog):
             ]
 
             embed = discord.Embed(
-                description=f"{ctx.author.mention} is lonely! Here's some cuddles!",
+                description=f"{interaction.user.mention} is lonely! Here's some cuddles!",
                 color=0xFF6666,
             )
 
-            embed.set_author(name=f"{ctx.guild.name}", icon_url=ctx.guild.icon.url)
+            embed.set_author(name=f"{interaction.guild.name}", icon_url=interaction.guild.icon.url)
 
-            embed.set_footer(text=ctx.author, icon_url=ctx.author.display_avatar.url)
+            embed.set_footer(text=interaction.user, icon_url=interaction.user.display_avatar.url)
 
             embed.set_image(url=random.choice(cud))
 
-            await ctx.send(embed=embed)
+            await interaction.response.send_message(embed=embed)
 
         else:
             cud = [
@@ -279,29 +265,22 @@ class Misc(commands.Cog):
             ]
 
             embed = discord.Embed(
-                description=f"{ctx.author.mention} cuddles {member}!", color=0xFF6666
+                description=f"{interaction.user.mention} cuddles {member}!", color=0xFF6666
             )
 
-            embed.set_author(name=f"{ctx.guild.name}", icon_url=ctx.guild.icon.url)
+            embed.set_author(name=f"{interaction.guild.name}", icon_url=interaction.guild.icon.url)
 
-            embed.set_footer(text=ctx.author, icon_url=ctx.author.display_avatar.url)
+            embed.set_footer(text=interaction.user, icon_url=interaction.user.display_avatar.url)
 
             embed.set_image(url=random.choice(cud))
 
-            await ctx.send(embed=embed)
+            await interaction.response.send_message(embed=embed)
 
-    @cuddle.error
-    async def cuddle_error(ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please mention someone to cuddle!")
-
-        if isinstance(error, commands.BadArgument):
-            await ctx.send("Couldn't find that user!")
 
     @app_commands.command(name="bite", description="Give a bite!")
     @app_commands.describe(member="Select a member!")
-    async def bite(self, ctx: commands.Context, *, member: str) -> None:
-        if member == ctx.author:
+    async def bite(self, interaction: discord.Interaction, member: discord.Member) -> None:
+        if member == interaction.user:
             bit = [
                 "https://cdn.weeb.sh/images/rJAlbgXsb.gif",
                 "https://cdn.weeb.sh/images/Hk1sxlQjZ.gif",
@@ -317,17 +296,17 @@ class Misc(commands.Cog):
             ]
 
             embed = discord.Embed(
-                description=f"{ctx.author.mention} got bitten by...No one :(",
+                description=f"{interaction.user.mention} got bitten by...No one :(",
                 color=0xFF6666,
             )
 
-            embed.set_author(name=f"{ctx.guild.name}", icon_url=ctx.guild.icon.url)
+            embed.set_author(name=f"{interaction.guild.name}", icon_url=interaction.guild.icon.url)
 
-            embed.set_footer(text=ctx.author, icon_url=ctx.author.display_avatar.url)
+            embed.set_footer(text=interaction.user, icon_url=interaction.user.display_avatar.url)
 
             embed.set_image(url=random.choice(bit))
 
-            await ctx.send(embed=embed)
+            await interaction.response.send_message(embed=embed)
 
         else:
             bit = [
@@ -345,32 +324,22 @@ class Misc(commands.Cog):
             ]
 
             embed = discord.Embed(
-                description=f"{ctx.author.mention} bites {member}!", color=0xFF6666
+                description=f"{interaction.user.mention} bites {member}!", color=0xFF6666
             )
 
-            embed.set_author(name=f"{ctx.guild.name}", icon_url=ctx.guild.icon.url)
+            embed.set_author(name=f"{interaction.guild.name}", icon_url=interaction.guild.icon.url)
 
-            embed.set_footer(text=ctx.author, icon_url=ctx.author.display_avatar.url)
+            embed.set_footer(text=interaction.user, icon_url=interaction.user.display_avatar.url)
 
             embed.set_image(url=random.choice(bit))
 
-            await ctx.send(embed=embed)
+            await interaction.response.send_message(embed=embed)
 
-    @bite.error
-    async def bite_error(ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please mention someone to bite!")
-
-        if isinstance(error, commands.BadArgument):
-            await ctx.send("Couldn't find that user!")
-
-        else:
-            raise error
 
     @app_commands.command(name="pat", description="Give a pat!")
     @app_commands.describe(member="Select a member!")
-    async def pat(self, ctx: commands.Context, *, member: str) -> None:
-        if member == ctx.author:
+    async def pat(self, interaction: discord.Interaction, member: discord.Member) -> None:
+        if member == interaction.user:
             pot = [
                 "https://media.discordapp.net/attachments/852831439460368416/1046673941432913980/cdc99142ee366b37.gif",
                 "https://media.discordapp.net/attachments/852831439460368416/1046673952317124619/c7d3184eb9af77dd.gif",
@@ -384,13 +353,13 @@ class Misc(commands.Cog):
 
             embed = discord.Embed(description=f"There there...", color=0xFF6666)
 
-            embed.set_author(name=f"{ctx.guild.name}", icon_url=ctx.guild.icon.url)
+            embed.set_author(name=f"{interaction.guild.name}", icon_url=interaction.guild.icon.url)
 
-            embed.set_footer(text=ctx.author, icon_url=ctx.author.display_avatar.url)
+            embed.set_footer(text=interaction.user, icon_url=interaction.user.display_avatar.url)
 
             embed.set_image(url=random.choice(pot))
 
-            await ctx.send(embed=embed)
+            await interaction.response.send_message(embed=embed)
 
         else:
             pot = [
@@ -405,32 +374,22 @@ class Misc(commands.Cog):
             ]
 
             embed = discord.Embed(
-                description=f"{ctx.author.mention} pats {member}!", color=0xFF6666
+                description=f"{interaction.user.mention} pats {member}!", color=0xFF6666
             )
 
-            embed.set_author(name=f"{ctx.guild.name}", icon_url=ctx.guild.icon.url)
+            embed.set_author(name=f"{interaction.guild.name}", icon_url=interaction.guild.icon.url)
 
-            embed.set_footer(text=ctx.author, icon_url=ctx.author.display_avatar.url)
+            embed.set_footer(text=interaction.user, icon_url=interaction.user.display_avatar.url)
 
             embed.set_image(url=random.choice(pot))
 
-            await ctx.send(embed=embed)
+            await interaction.response.send_message(embed=embed)
 
-    @pat.error
-    async def pat_error(ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please mention someone to pat!")
-
-        if isinstance(error, commands.BadArgument):
-            await ctx.send("Couldn't find that user!")
-
-        else:
-            raise error
 
     @app_commands.command(name="poke", description="Give a poke!")
     @app_commands.describe(member="Select a member!")
-    async def poke(self, ctx: commands.Context, *, member: str) -> None:
-        if member == ctx.author:
+    async def poke(self, interaction: discord.Interaction, member: discord.Member) -> None:
+        if member == interaction.user:
             pok = [
                 "https://media.discordapp.net/attachments/852831439460368416/1046674609111576616/2b5c02ea72dabd21.gif",
                 "https://media.discordapp.net/attachments/852831439460368416/1046674612601237595/04a1b7dd2853687c.gif",
@@ -444,13 +403,13 @@ class Misc(commands.Cog):
 
             embed = discord.Embed(description=f"Here lemme poke you!", color=0xFF6666)
 
-            embed.set_author(name=f"{ctx.guild.name}", icon_url=ctx.guild.icon.url)
+            embed.set_author(name=f"{interaction.guild.name}", icon_url=interaction.guild.icon.url)
 
-            embed.set_footer(text=ctx.author, icon_url=ctx.author.display_avatar.url)
+            embed.set_footer(text=interaction.user, icon_url=interaction.user.display_avatar.url)
 
             embed.set_image(url=random.choice(pok))
 
-            await ctx.send(embed=embed)
+            await interaction.response.send_message(embed=embed)
 
         else:
             pok = [
@@ -465,32 +424,21 @@ class Misc(commands.Cog):
             ]
 
             embed = discord.Embed(
-                description=f"{ctx.author.mention} pokes {member}!", color=0xFF6666
+                description=f"{interaction.user.mention} pokes {member}!", color=0xFF6666
             )
 
-            embed.set_author(name=f"{ctx.guild.name}", icon_url=ctx.guild.icon.url)
+            embed.set_author(name=f"{interaction.guild.name}", icon_url=interaction.guild.icon.url)
 
-            embed.set_footer(text=ctx.author, icon_url=ctx.author.display_avatar.url)
+            embed.set_footer(text=interaction.user, icon_url=interaction.user.display_avatar.url)
 
             embed.set_image(url=random.choice(pok))
 
-            await ctx.send(embed=embed)
-
-    @poke.error
-    async def poke_error(ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please mention someone to poke!")
-
-        if isinstance(error, commands.BadArgument):
-            await ctx.send("Couldn't find that user!")
-
-        else:
-            raise error
+            await interaction.response.send_message(embed=embed)
 
     @app_commands.command(name="slap", description="Give a slap!")
     @app_commands.describe(member="Select a member!")
-    async def slap(self, ctx: commands.Context, *, member: str) -> None:
-        if member == ctx.author:
+    async def slap(self, interaction: discord.Interaction, member: discord.Member) -> None:
+        if member == interaction.user:
             slap = [
                 "https://media.discordapp.net/attachments/852831439460368416/1046675056945811456/fe1c50dfffaf4f59.gif",
                 "https://media.discordapp.net/attachments/852831439460368416/1046675058002763826/7339ae33841dcdbe.gif",
@@ -503,13 +451,13 @@ class Misc(commands.Cog):
 
             embed = discord.Embed(description=f"You've been bad...", color=0xFF6666)
 
-            embed.set_author(name=f"{ctx.guild.name}", icon_url=ctx.guild.icon.url)
+            embed.set_author(name=f"{interaction.guild.name}", icon_url=interaction.guild.icon.url)
 
-            embed.set_footer(text=ctx.author, icon_url=ctx.author.display_avatar.url)
+            embed.set_footer(text=interaction.user, icon_url=interaction.user.display_avatar.url)
 
             embed.set_image(url=random.choice(slap))
 
-            await ctx.send(embed=embed)
+            await interaction.response.send_message(embed=embed)
 
         else:
             slap = [
@@ -523,32 +471,22 @@ class Misc(commands.Cog):
             ]
 
             embed = discord.Embed(
-                description=f"{ctx.author.mention} slaps {member}!", color=0xFF6666
+                description=f"{interaction.user.mention} slaps {member}!", color=0xFF6666
             )
 
-            embed.set_author(name=f"{ctx.guild.name}", icon_url=ctx.guild.icon.url)
+            embed.set_author(name=f"{interaction.guild.name}", icon_url=interaction.guild.icon.url)
 
-            embed.set_footer(text=ctx.author, icon_url=ctx.author.display_avatar.url)
+            embed.set_footer(text=interaction.user, icon_url=interaction.user.display_avatar.url)
 
             embed.set_image(url=random.choice(slap))
 
-            await ctx.send(embed=embed)
+            await interaction.response.send_message(embed=embed)
 
-    @slap.error
-    async def slap_error(ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please mention someone to slap!")
-
-        if isinstance(error, commands.BadArgument):
-            await ctx.send("Couldn't find that user!")
-
-        else:
-            raise error
 
     @app_commands.command(name="highfive", description="Give a highfive!")
     @app_commands.describe(member="Select a member!")
-    async def highfive(self, ctx: commands.Context, *, member: str) -> None:
-        if member == ctx.author:
+    async def highfive(self, interaction: discord.Interaction, member: discord.Member) -> None:
+        if member == interaction.user:
             high = [
                 "https://media.discordapp.net/attachments/852831439460368416/1046675409015672842/3475741c02441b04.gif",
                 "https://media.discordapp.net/attachments/852831439460368416/1046675413524553798/preview.gif",
@@ -565,13 +503,13 @@ class Misc(commands.Cog):
 
             embed = discord.Embed(description=f"Let's do it!", color=0xFF6666)
 
-            embed.set_author(name=f"{ctx.guild.name}", icon_url=ctx.guild.icon.url)
+            embed.set_author(name=f"{interaction.guild.name}", icon_url=interaction.guild.icon.url)
 
-            embed.set_footer(text=ctx.author, icon_url=ctx.author.display_avatar.url)
+            embed.set_footer(text=interaction.user, icon_url=interaction.user.display_avatar.url)
 
             embed.set_image(url=random.choice(high))
 
-            await ctx.send(embed=embed)
+            await interaction.response.send_message(embed=embed)
 
         else:
             high = [
@@ -589,32 +527,22 @@ class Misc(commands.Cog):
             ]
 
             embed = discord.Embed(
-                description=f"{ctx.author.mention} highfives {member}!", color=0xFF6666
+                description=f"{interaction.user.mention} highfives {member}!", color=0xFF6666
             )
 
-            embed.set_author(name=f"{ctx.guild.name}", icon_url=ctx.guild.icon.url)
+            embed.set_author(name=f"{interaction.guild.name}", icon_url=interaction.guild.icon.url)
 
-            embed.set_footer(text=ctx.author, icon_url=ctx.author.display_avatar.url)
+            embed.set_footer(text=interaction.user, icon_url=interaction.user.display_avatar.url)
 
             embed.set_image(url=random.choice(high))
 
-            await ctx.send(embed=embed)
+            await interaction.response.send_message(embed=embed)
 
-    @highfive.error
-    async def highfive_error(ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please mention someone to highfive!")
-
-        if isinstance(error, commands.BadArgument):
-            await ctx.send("Couldn't find that user!")
-
-        else:
-            raise error
 
     @app_commands.command(name="handhold", description="Hold some hands!")
     @app_commands.describe(member="Select a member!")
-    async def handhold(self, ctx: commands.Context, *, member: str) -> None:
-        if member == ctx.author:
+    async def handhold(self, interaction: discord.Interaction, member: discord.Member) -> None:
+        if member == interaction.user:
             handhold = [
                 "https://cdn.weeb.sh/images/BkiRKrLBz.gif",
                 "https://cdn.weeb.sh/images/rk5SMpq-M.gif",
@@ -632,13 +560,13 @@ class Misc(commands.Cog):
                 description=f"I'll hold your hands :(", color=0xFF6666
             )
 
-            embed.set_author(name=f"{ctx.guild.name}", icon_url=ctx.guild.icon.url)
+            embed.set_author(name=f"{interaction.guild.name}", icon_url=interaction.guild.icon.url)
 
-            embed.set_footer(text=ctx.author, icon_url=ctx.author.display_avatar.url)
+            embed.set_footer(text=interaction.user, icon_url=interaction.user.display_avatar.url)
 
             embed.set_image(url=random.choice(handhold))
 
-            await ctx.send(embed=embed)
+            await interaction.response.send_message(embed=embed)
 
         else:
             handhold = [
@@ -655,33 +583,22 @@ class Misc(commands.Cog):
             ]
 
             embed = discord.Embed(
-                description=f"{ctx.author.mention} holds hands of {member}!",
+                description=f"{interaction.user.mention} holds hands of {member}!",
                 color=0xFF6666,
             )
 
-            embed.set_author(name=f"{ctx.guild.name}", icon_url=ctx.guild.icon.url)
+            embed.set_author(name=f"{interaction.guild.name}", icon_url=interaction.guild.icon.url)
 
-            embed.set_footer(text=ctx.author, icon_url=ctx.author.display_avatar.url)
+            embed.set_footer(text=interaction.user, icon_url=interaction.user.display_avatar.url)
 
             embed.set_image(url=random.choice(handhold))
 
-            await ctx.send(embed=embed)
-
-    @handhold.error
-    async def handhold_error(ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please mention someone to handhold!")
-
-        if isinstance(error, commands.BadArgument):
-            await ctx.send("Couldn't find that user!")
-
-        else:
-            raise error
+            await interaction.response.send_message(embed=embed)
 
     @app_commands.command(name="punch", description="Give a punch!")
     @app_commands.describe(member="Select a member!")
-    async def punch(self, ctx: commands.Context, *, member: str) -> None:
-        if member == ctx.author:
+    async def punch(self, interaction: discord.Interaction, member: discord.Member) -> None:
+        if member == interaction.user:
             punch = [
                 "https://images-ext-1.discordapp.net/external/w4pvWUqZ7DwYsphKvaSKMFXNarCngEd1cc_ZBTw0ISs/https/cdn.weeb.sh/images/rJHLDT-Wz.gif",
                 "https://images-ext-1.discordapp.net/external/BXaocQWGvF1Pjhun0GPOZhZixuToMHTWVv2EzgWAhqs/https/cdn.weeb.sh/images/ByI7vTb-G.gif",
@@ -696,13 +613,13 @@ class Misc(commands.Cog):
                 description=f"I'll punch you..for being bad!", color=0xFF6666
             )
 
-            embed.set_author(name=f"{ctx.guild.name}", icon_url=ctx.guild.icon.url)
+            embed.set_author(name=f"{interaction.guild.name}", icon_url=interaction.guild.icon.url)
 
-            embed.set_footer(text=ctx.author, icon_url=ctx.author.display_avatar.url)
+            embed.set_footer(text=interaction.user, icon_url=interaction.user.display_avatar.url)
 
             embed.set_image(url=random.choice(punch))
 
-            await ctx.send(embed=embed)
+            await interaction.response.send_message(embed=embed)
 
         else:
             punch = [
@@ -716,31 +633,20 @@ class Misc(commands.Cog):
             ]
 
             embed = discord.Embed(
-                description=f"{ctx.author.mention} punches {member}!", color=0xFF6666
+                description=f"{interaction.user.mention} punches {member}!", color=0xFF6666
             )
 
-            embed.set_author(name=f"{ctx.guild.name}", icon_url=ctx.guild.icon.url)
+            embed.set_author(name=f"{interaction.guild.name}", icon_url=interaction.guild.icon.url)
 
-            embed.set_footer(text=ctx.author, icon_url=ctx.author.display_avatar.url)
+            embed.set_footer(text=interaction.user, icon_url=interaction.user.display_avatar.url)
 
             embed.set_image(url=random.choice(punch))
 
-            await ctx.send(embed=embed)
-
-    @punch.error
-    async def punch_error(ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please mention someone to punch!")
-
-        if isinstance(error, commands.BadArgument):
-            await ctx.send("Couldn't find that user!")
-
-        else:
-            raise error
+            await interaction.response.send_message(embed=embed)
 
     @app_commands.command(name="pout", description="Do a big pout!")
     @app_commands.describe(member="Select a member!")
-    async def pout(self, ctx: commands.Context, *, member: str) -> None:
+    async def pout(self, interaction: discord.Interaction, member: discord.Member) -> None:
         if member is None:
             pout = [
                 "https://media.discordapp.net/attachments/852831439460368416/1046678018132820038/6c9d83ee641da6c5.gif",
@@ -758,16 +664,16 @@ class Misc(commands.Cog):
             ]
 
             embed = discord.Embed(
-                description=f"{ctx.author.mention} pouts!", color=0xFF6666
+                description=f"{interaction.user.mention} pouts!", color=0xFF6666
             )
 
-            embed.set_author(name=f"{ctx.guild.name}", icon_url=ctx.guild.icon.url)
+            embed.set_author(name=f"{interaction.guild.name}", icon_url=interaction.guild.icon.url)
 
-            embed.set_footer(text=ctx.author, icon_url=ctx.author.display_avatar.url)
+            embed.set_footer(text=interaction.user, icon_url=interaction.user.display_avatar.url)
 
             embed.set_image(url=random.choice(pout))
 
-            await ctx.send(embed=embed)
+            await interaction.response.send_message(embed=embed)
 
         else:
             pout = [
@@ -786,21 +692,21 @@ class Misc(commands.Cog):
             ]
 
             embed = discord.Embed(
-                description=f"{ctx.author.mention} pouts {member}!", color=0xFF6666
+                description=f"{interaction.user.mention} pouts {member}!", color=0xFF6666
             )
 
-            embed.set_author(name=f"{ctx.guild.name}", icon_url=ctx.guild.icon.url)
+            embed.set_author(name=f"{interaction.guild.name}", icon_url=interaction.guild.icon.url)
 
-            embed.set_footer(text=ctx.author, icon_url=ctx.author.display_avatar.url)
+            embed.set_footer(text=interaction.user, icon_url=interaction.user.display_avatar.url)
 
             embed.set_image(url=random.choice(pout))
 
-            await ctx.send(embed=embed)
+            await interaction.response.send_message(embed=embed)
 
     @app_commands.command(name="lick", description="Give some lick!")
     @app_commands.describe(member="Select a member!")
-    async def lick(self, ctx: commands.Context, *, member: str) -> None:
-        if member == ctx.author:
+    async def lick(self, interaction: discord.Interaction, member: discord.Member) -> None:
+        if member == interaction.user:
             lic = [
                 "https://cdn.weeb.sh/images/rktygCOD-.gif",
                 "https://cdn.weeb.sh/images/HJRRyAuP-.gif",
@@ -819,17 +725,17 @@ class Misc(commands.Cog):
             ]
 
             embed = discord.Embed(
-                description=f"{ctx.author.mention} got licked by...No one :(",
+                description=f"{interaction.user.mention} got licked by...No one :(",
                 color=0xFF6666,
             )
 
-            embed.set_author(name=f"{ctx.guild.name}", icon_url=ctx.guild.icon.url)
+            embed.set_author(name=f"{interaction.guild.name}", icon_url=interaction.guild.icon.url)
 
-            embed.set_footer(text=ctx.author, icon_url=ctx.author.display_avatar.url)
+            embed.set_footer(text=interaction.user, icon_url=interaction.user.display_avatar.url)
 
             embed.set_image(url=random.choice(lic))
 
-            await ctx.send(embed=embed)
+            await interaction.response.send_message(embed=embed)
 
         else:
             lic = [
@@ -850,29 +756,22 @@ class Misc(commands.Cog):
             ]
 
             embed = discord.Embed(
-                description=f"{ctx.author.mention} licks {member}!", color=0xFF6666
+                description=f"{interaction.user.mention} licks {member}!", color=0xFF6666
             )
 
-            embed.set_author(name=f"{ctx.guild.name}", icon_url=ctx.guild.icon.url)
+            embed.set_author(name=f"{interaction.guild.name}", icon_url=interaction.guild.icon.url)
 
-            embed.set_footer(text=ctx.author, icon_url=ctx.author.display_avatar.url)
+            embed.set_footer(text=interaction.user, icon_url=interaction.user.display_avatar.url)
 
             embed.set_image(url=random.choice(lic))
 
-            await ctx.send(embed=embed)
+            await interaction.response.send_message(embed=embed)
 
-    @lick.error
-    async def lick_error(ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please mention someone to lick!")
-
-        if isinstance(error, commands.BadArgument):
-            await ctx.send("Couldn't find that user!")
 
     @app_commands.command(name="spank", description="Spank someone!")
     @app_commands.describe(member="Select a member!")
-    async def spank(self, ctx: commands.Context, *, member: str) -> None:
-        if ctx.channel.id == 925466623668797490:
+    async def spank(self, interaction: discord.Interaction, member: discord.Member) -> None:
+        if interaction.channel.id == 925466623668797490:
             spank = [
                 "https://media.discordapp.net/attachments/756378270638800896/1048246243580706816/taritari-anime-spank.gif",
                 "https://media.discordapp.net/attachments/756378270638800896/1048246243199033394/spank-anime.gif",
@@ -882,35 +781,25 @@ class Misc(commands.Cog):
             ]
 
             embed = discord.Embed(
-                description=f"{ctx.author.mention} spanks {member}!", color=0xFFCCCC
+                description=f"{interaction.user.mention} spanks {member}!", color=0xFFCCCC
             )
 
-            embed.set_author(name=f"{ctx.guild.name}", icon_url=ctx.guild.icon.url)
+            embed.set_author(name=f"{interaction.guild.name}", icon_url=interaction.guild.icon.url)
 
-            embed.set_footer(text=ctx.author, icon_url=ctx.author.display_avatar.url)
+            embed.set_footer(text=interaction.user, icon_url=interaction.user.display_avatar.url)
 
             embed.set_image(url=random.choice(spank))
 
-            await ctx.send(embed=embed)
+            await interaction.response.send_message(embed=embed)
 
         else:
-            await ctx.send("Please move to <#925466623668797490> to use this command!")
+            await interaction.response.send_message("Please move to <#925466623668797490> to use this command!")
 
-    @spank.error
-    async def spank_error(ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please mention someone to spank!")
-
-        if isinstance(error, commands.BadArgument):
-            await ctx.send("Couldn't find that user!")
-
-        else:
-            raise error
 
     @app_commands.command(name="fuck", description="Fuck someone!")
     @app_commands.describe(member="Select a member!")
-    async def fuck(self, ctx: commands.Context, *, member: str) -> None:
-        if ctx.channel.id == 925466623668797490:
+    async def fuck(self, interaction: discord.Interaction, member: discord.Member) -> None:
+        if interaction.channel.id == 925466623668797490:
             fuck = [
                 "https://media.discordapp.net/attachments/756378270638800896/1048248170112634910/ezgif-3-bbff94600f.gif",
                 "https://media.discordapp.net/attachments/756378270638800896/1048248170574000138/ezgif-3-76a13c2a4b.gif",
@@ -921,70 +810,49 @@ class Misc(commands.Cog):
             ]
 
             embed = discord.Embed(
-                description=f"{ctx.author.mention} fucks {member}", color=0xFFCCCC
+                description=f"{interaction.user.mention} fucks {member}", color=0xFFCCCC
             )
 
-            embed.set_author(name=f"{ctx.guild.name}", icon_url=ctx.guild.icon.url)
+            embed.set_author(name=f"{interaction.guild.name}", icon_url=interaction.guild.icon.url)
 
-            embed.set_footer(text=ctx.author, icon_url=ctx.author.display_avatar.url)
+            embed.set_footer(text=interaction.user, icon_url=interaction.user.display_avatar.url)
 
             embed.set_image(url=random.choice(fuck))
 
-            await ctx.send(embed=embed)
+            await interaction.response.send_message(embed=embed)
 
         else:
-            await ctx.send("Please move to <#925466623668797490> to use this command!")
+            await interaction.response.send_message("Please move to <#925466623668797490> to use this command!")
 
-    @fuck.error
-    async def fuck_error(ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please mention someone to fuck!")
-
-        if isinstance(error, commands.BadArgument):
-            await ctx.send("Couldn't find that user!")
-
-        else:
-            raise error
 
     @app_commands.command(name="blowjob", description="Give a blowjob!")
     @app_commands.describe(member="Select a member!")
-    async def blowjob(self, ctx: commands.Context, *, member: str) -> None:
-        if ctx.channel.id == 925466623668797490:
+    async def blowjob(self, interaction: discord.Interaction, member: discord.Member) -> None:
+        if interaction.channel.id == 925466623668797490:
             blowjob = [
                 "https://media.discordapp.net/attachments/756378270638800896/1048250999011287050/ezgif-3-a3876aeedb.gif",
                 "https://media.discordapp.net/attachments/756378270638800896/1048250999359422564/ezgif-3-2dab498bc8.gif",
             ]
 
             embed = discord.Embed(
-                description=f"{ctx.author.mention} blows {member}!", color=0xFFCCCC
+                description=f"{interaction.user.mention} blows {member}!", color=0xFFCCCC
             )
 
-            embed.set_author(name=f"{ctx.guild.name}", icon_url=ctx.guild.icon.url)
+            embed.set_author(name=f"{interaction.guild.name}", icon_url=interaction.guild.icon.url)
 
-            embed.set_footer(text=ctx.author, icon_url=ctx.author.display_avatar.url)
+            embed.set_footer(text=interaction.user, icon_url=interaction.user.display_avatar.url)
 
             embed.set_image(url=random.choice(blowjob))
 
-            await ctx.send(embed=embed)
+            await interaction.response.send_message(embed=embed)
 
         else:
-            await ctx.send("Please move to <#925466623668797490> to use this command!")
+            await interaction.response.send_message("Please move to <#925466623668797490> to use this command!")
 
-    @blowjob.error
-    async def blowjob_error(ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please mention someone to give a blowjob!")
 
-        if isinstance(error, commands.BadArgument):
-            await ctx.send("Couldn't find that user!")
-
-        else:
-            raise error
-
-    @app_commands.command()
+    @app_commands.command(description="Whip someone")
     @app_commands.describe(member="Select a member!")
-    async def whip(self, ctx: commands.Context, *, member: str) -> None:
-        """Whip someone"""
+    async def whip(self, interaction: discord.Interaction, member: discord.Member) -> None:
 
         gif_list = [
             "https://cdn.discordapp.com/attachments/760402160390373419/760434157133234186/whipping.gif",
@@ -995,25 +863,18 @@ class Misc(commands.Cog):
             "https://cdn.discordapp.com/attachments/730825643272568964/760399708068773918/image0.gif",
         ]
         embed = discord.Embed(
-            description=f"{ctx.author.mention} whips {member}!", color=0xFF6666
+            description=f"{interaction.user.mention} whips {member}!", color=0xFF6666
         )
         embed.set_image(url=random.choice(gif_list))
-        embed.set_author(name=ctx.guild.name, icon_url=ctx.guild.icon.url)
-        embed.set_footer(text=ctx.author, icon_url=ctx.author.display_avatar.url)
-        await ctx.send(embed=embed)
+        embed.set_author(name=interaction.guild.name, icon_url=interaction.guild.icon.url)
+        embed.set_footer(text=interaction.user, icon_url=interaction.user.display_avatar.url)
+        await interaction.response.send_message(embed=embed)
 
-    @whip.error
-    async def whip_error(self, ctx: commands.Context, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please mention a user to whip!")
-
-        else:
-            await ctx.send(error)
 
     @app_commands.command()
     @app_commands.describe(member="Select a member!")
-    async def titties(self, ctx: commands.Context, *, member: str) -> None:
-        if ctx.channel.id == 925466623668797490:
+    async def titties(self, interaction: discord.Interaction, member: discord.Member) -> None:
+        if interaction.channel.id == 925466623668797490:
             """Play with some titties!"""
 
             titties = [
@@ -1029,35 +890,25 @@ class Misc(commands.Cog):
             ]
 
             embed = discord.Embed(
-                description=f"{ctx.author.mention} tiddies {member}!", color=0xFF6666
+                description=f"{interaction.user.mention} tiddies {member}!", color=0xFF6666
             )
 
-            embed.set_author(name=f"{ctx.guild.name}", icon_url=ctx.guild.icon.url)
+            embed.set_author(name=f"{interaction.guild.name}", icon_url=interaction.guild.icon.url)
 
-            embed.set_footer(text=ctx.author, icon_url=ctx.author.display_avatar.url)
+            embed.set_footer(text=interaction.user, icon_url=interaction.user.display_avatar.url)
 
             embed.set_image(url=random.choice(titties))
 
-            await ctx.send(embed=embed)
+            await interaction.response.send_message(embed=embed)
 
         else:
-            await ctx.send("Please move to <#925466623668797490> to use this command!")
+            await interaction.response.send_message("Please move to <#925466623668797490> to use this command!")
 
-    @titties.error
-    async def titties_error(ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please mention someone to play with titties!")
-
-        if isinstance(error, commands.BadArgument):
-            await ctx.send("Couldn't find that user!")
-
-        else:
-            raise error
 
     @app_commands.command()
     @app_commands.describe(member="Select a member!")
-    async def peg(self, ctx: commands.Context, *, member: str) -> None:
-        if ctx.channel.id == 925466623668797490:
+    async def peg(self, interaction: discord.Interaction, member: discord.Member) -> None:
+        if interaction.channel.id == 925466623668797490:
             """Wanting to peg someone!"""
 
             pegging = [
@@ -1073,38 +924,19 @@ class Misc(commands.Cog):
             ]
 
             embed = discord.Embed(
-                description=f"{ctx.author.mention} pegging {member}!", color=0xFF6666
+                description=f"{interaction.user.mention} pegging {member}!", color=0xFF6666
             )
 
-            embed.set_author(name=f"{ctx.guild.name}", icon_url=ctx.guild.icon.url)
+            embed.set_author(name=f"{interaction.guild.name}", icon_url=interaction.guild.icon.url)
 
-            embed.set_footer(text=ctx.author, icon_url=ctx.author.display_avatar.url)
+            embed.set_footer(text=interaction.user, icon_url=interaction.user.display_avatar.url)
 
             embed.set_image(url=random.choice(pegging))
 
-            await ctx.send(embed=embed)
+            await interaction.response.send_message(embed=embed)
 
         else:
-            await ctx.send("Please move to <#925466623668797490> to use this command!")
-
-    @peg.error
-    async def pegging_error(ctx, error):
-        if isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send("Please mention someone to peg them!")
-
-        if isinstance(error, commands.BadArgument):
-            await ctx.send("Couldn't find that user!")
-
-        else:
-            raise error
-
-    @app_commands.command()
-    async def role(self, ctx: commands.Context):
-        """Posts a rolemenu"""
-
-        embed = discord.Embed(color=0xFF6666)
-
-        embed
+            await interaction.response.send_message("Please move to <#925466623668797490> to use this command!")
 
 
 async def setup(client):
