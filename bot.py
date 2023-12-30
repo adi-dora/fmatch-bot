@@ -16,7 +16,7 @@ from textwrap import indent
 
 import datetime
 
-
+from dotenv import load_dotenv
 from discord.ext import commands
 from discord import app_commands
 from discord.ext import tasks
@@ -30,6 +30,8 @@ client = commands.Bot(
     case_insensitive=True,
     description="General purpose bot for Tickets, Activity Management and Moderation, along with miscellaneous features.",
 )
+
+load_dotenv()
 
 @client.event
 async def on_ready():

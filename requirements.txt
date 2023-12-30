@@ -3,3 +3,5 @@ topggpy==1.4.0
 dateutil==2.8.2
 aiohttp==3.8.4
 pillow==9.5.0
+ngrok==0.12.1
+python-dotenv==1.0.0
