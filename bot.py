@@ -24,16 +24,12 @@ from discord.ext.commands import when_mentioned_or
 from datetime import datetime
 from typing import Any, List, Optional, Type, Union
 
-# mydb = myclient['Altura']
 client = commands.Bot(
     command_prefix=when_mentioned_or("!"),
     intents=discord.Intents.all(),
     case_insensitive=True,
     description="General purpose bot for Tickets, Activity Management and Moderation, along with miscellaneous features.",
 )
-# dbl_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijc0MDgyMjc0NDMwMzkyNzM3OCIsImJvdCI6dHJ1ZSwiaWF0IjoxNjA1Nzg3NjcxfQ.oQWZ2X5EFIrn2NUOHM2DOxVID4u83uWnC4MAkJCB-m8"  # set this to your bot's top.gg token
-# client.dblpy = dbl.DBLClient(client, dbl_token, webhook_path='/848562185918873621/V3ucwoldQ-ZQQTG7fJvvZ04jEhTxWzjy2704RvhsrRCKhVdw0aTHbaOln4mXjCfQFxtG', webhook_port=5000)
-
 
 @client.event
 async def on_ready():
