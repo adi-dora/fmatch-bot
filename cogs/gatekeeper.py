@@ -148,14 +148,17 @@ class ConfirmationView(discord.ui.View):
         super().__init__(timeout=300)
         self.channel = channel
         self.message = message
-        self.link = link
+        self.file = link
 
     @discord.ui.button(label="Confirm", style=discord.ButtonStyle.green)
     async def confirm(self, interaction: Interaction, button: discord.ui.Button):
         with open("gatekeeper.json", "r") as f:
             gate = json.load(f)
-        if self.link:
-            await self.channel.send(self.link)
+        file = discord.utils.MISSING
+        if self.file:
+            file = discord.File(self.file)
+        
+        await self.channel.send(file=file)
 
         m = await self.channel.send(self.message, view=GatekeeperView())
         gate["msg_id"] = m.id
@@ -297,11 +300,12 @@ class Gatekeeper(commands.Cog):
                         for gender in gate["gender"]
                     ),
                 )
-            ).set_image(url=gate["link"])
+            ).set_image(url="attachment://img.png")
 
             await interaction.response.send_message(
                 "Are you sure you want to create the Agree message with these settings?",
                 embed=embed,
+                file=discord.File(gate['link'], filename='img.png') if gate['link'] else discord.utils.MISSING,
                 view=ConfirmationView(channel, rules, gate["link"]),
             )
         except Exception as e:
