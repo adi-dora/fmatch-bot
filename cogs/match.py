@@ -396,6 +396,7 @@ class Match(commands.Cog):
         m = await chan.send(match_json["message"], view=MatchView())
 
         match_json["match_view_id"] = m.id
+        dump_match_json(match_json)
 
     # @tasks.loop(minutes=2)
     @app_commands.command()
