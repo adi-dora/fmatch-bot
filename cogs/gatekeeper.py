@@ -157,7 +157,7 @@ class ConfirmationView(discord.ui.View):
         file = discord.utils.MISSING
         if self.file:
             file = discord.File(self.file)
-        
+
         await self.channel.send(file=file)
 
         m = await self.channel.send(self.message, view=GatekeeperView())
@@ -305,7 +305,9 @@ class Gatekeeper(commands.Cog):
             await interaction.response.send_message(
                 "Are you sure you want to create the Agree message with these settings?",
                 embed=embed,
-                file=discord.File(gate['link'], filename='img.png') if gate['link'] else discord.utils.MISSING,
+                file=discord.File(gate["link"], filename="img.png")
+                if gate["link"]
+                else discord.utils.MISSING,
                 view=ConfirmationView(channel, rules, gate["link"]),
             )
         except Exception as e:
