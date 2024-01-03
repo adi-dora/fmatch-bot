@@ -181,7 +181,7 @@ class Gatekeeper(commands.Cog):
     async def on_ready(self):
         with open("gatekeeper.json", "r") as f:
             gate = json.load(f)
-        await self.bot.add_view(GatekeeperView(), gate["msg_id"])
+        self.bot.add_view(GatekeeperView(), message_id=gate["msg_id"])
 
     gatekeeper = app_commands.Group(
         name="gatekeeper",
